@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("csharp_ecommerce_web_git")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2c5fb9595afd44d6b2a5b04d6df880770b9f8dc7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6fa09e5a5d8091331478523095c46f510339d193")]
 [assembly: System.Reflection.AssemblyProductAttribute("csharp_ecommerce_web_git")]
 [assembly: System.Reflection.AssemblyTitleAttribute("csharp_ecommerce_web_git")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
