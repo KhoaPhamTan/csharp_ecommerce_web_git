@@ -1,6 +1,0 @@
-@csharp_ecommerce_web_git_HostAddress = http://localhost:5196
-
-GET {{csharp_ecommerce_web_git_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
