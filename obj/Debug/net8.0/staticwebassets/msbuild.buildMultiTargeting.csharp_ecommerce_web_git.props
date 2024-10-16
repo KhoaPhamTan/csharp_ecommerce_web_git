@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\csharp_ecommerce_web_git.props" />
+</Project>
