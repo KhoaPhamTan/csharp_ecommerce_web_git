@@ -1,10 +1,10 @@
 namespace WebStore.DTOs;
 public record class PetStoreDTO(
-    int id, 
-    string itemId,
-    string productId,
-    string petType, 
-    string gender, 
-    string petDescription,
-    decimal price, 
-    DateOnly birthDay);
+    int Id, 
+    string ItemId,
+    string ProductId,
+    string PetType, 
+    string Gender, 
+    string PetDescription,
+    decimal Price, 
+    DateOnly BirthDay);

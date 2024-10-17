@@ -47,7 +47,7 @@ public static class StoresEndPoints
         // Get /stores/1
         group.MapGet("/{id}", (int id) =>
         {
-            PetStoreDTO? petStore = petStores.Find(petStores => petStores.id == id);
+            PetStoreDTO? petStore = petStores.Find(petStores => petStores.Id == id);
             return petStore is null ? Results.NotFound() : Results.Ok(petStore);
         })
         .WithName(GetStoreEndpointName);
@@ -62,16 +62,16 @@ public static class StoresEndPoints
             // }
             PetStoreDTO store = new(
                 petStores.Count + 1,
-                newPetStore.itemId,
-                newPetStore.productId,
-                newPetStore.petType,
-                newPetStore.gender,
-                newPetStore.petDescription,
-                newPetStore.price,
-                newPetStore.birthDay
+                newPetStore.ItemId,
+                newPetStore.ProductId,
+                newPetStore.PetType,
+                newPetStore.Gender,
+                newPetStore.PetDescription,
+                newPetStore.Price,
+                newPetStore.BirthDay
             );
             petStores.Add(store);
-            return Results.CreatedAtRoute(GetStoreEndpointName, new { id = store.id }, store);
+            return Results.CreatedAtRoute(GetStoreEndpointName, new { id = store.Id }, store);
         })
         .WithParameterValidation();
 
@@ -81,7 +81,7 @@ public static class StoresEndPoints
         // PUT
         group.MapPut("/{id}", (int id, UpdatedPetStoreDTO updatedPetStoreDTO) =>
         {
-            var index = petStores.FindIndex(store => store.id == id); // Correctly compare the id property
+            var index = petStores.FindIndex(store => store.Id == id); // Correctly compare the id property
 
             if (index == -1)
             {
@@ -91,13 +91,13 @@ public static class StoresEndPoints
             // Update the store
             petStores[index] = new PetStoreDTO(
                 id,
-                updatedPetStoreDTO.itemId,
-                updatedPetStoreDTO.productId,
-                updatedPetStoreDTO.petType,
-                updatedPetStoreDTO.gender,
-                updatedPetStoreDTO.petDescription,
-                updatedPetStoreDTO.price,
-                updatedPetStoreDTO.birthDay
+                updatedPetStoreDTO.ItemId,
+                updatedPetStoreDTO.ProductId,
+                updatedPetStoreDTO.PetType,
+                updatedPetStoreDTO.Gender,
+                updatedPetStoreDTO.PetDescription,
+                updatedPetStoreDTO.Price,
+                updatedPetStoreDTO.BirthDay
             );
 
             return Results.NoContent();
@@ -107,7 +107,7 @@ public static class StoresEndPoints
 
         group.MapDelete("/{id}", (int id) =>
         {
-            petStores.RemoveAll(store => store.id == id);
+            petStores.RemoveAll(store => store.Id == id);
             return Results.NoContent();
         });
         return group;
