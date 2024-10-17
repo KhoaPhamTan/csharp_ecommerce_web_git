@@ -23,6 +23,20 @@ Content-Type: application/json
     "birthDay": "2023-09-09"
 }
 
+
+### wrong Type
+POST  http://localhost:5134/petStores
+Content-Type: application/json
+
+{
+    "itemId": "F-002 vvvv00000000v",
+    "productId": "F-FM-002",
+        "petType": "Fish",
+    "gender": "Female",
+    "petDescription": "Big",
+    "price": 99998.01,
+    "birthDay": "2023-09-09"
+}
 ###
 PUT  http://localhost:5134/petStores/4
 Content-Type: application/json

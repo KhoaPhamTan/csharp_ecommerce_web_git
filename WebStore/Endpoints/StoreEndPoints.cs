@@ -36,13 +36,16 @@ public static class StoresEndPoints
 
 ];
 
-    public static WebApplication MapStoresEndPoints(this WebApplication app)
+    public static RouteGroupBuilder MapStoresEndPoints(this WebApplication app)
     {
+        var group = app.MapGroup("petStores")
+        .WithParameterValidation();
+
         // Get /stores
-        app.MapGet("petStores", () => petStores);
+        group.MapGet("/", () => petStores);
 
         // Get /stores/1
-        app.MapGet("petStores/{id}", (int id) =>
+        group.MapGet("/{id}", (int id) =>
         {
             PetStoreDTO? petStore = petStores.Find(petStores => petStores.id == id);
             return petStore is null ? Results.NotFound() : Results.Ok(petStore);
@@ -51,8 +54,12 @@ public static class StoresEndPoints
 
 
         // Post /stores/1
-        app.MapPost("petStores", (CreatePetDTO newPetStore) =>
+        group.MapPost("/", (CreatePetDTO newPetStore) =>
         {
+            // if (string.IsNullOrEmpty(newPetStore.petType))
+            // {
+            //     return Results.BadRequest("Pet type is required");
+            // }
             PetStoreDTO store = new(
                 petStores.Count + 1,
                 newPetStore.itemId,
@@ -65,13 +72,14 @@ public static class StoresEndPoints
             );
             petStores.Add(store);
             return Results.CreatedAtRoute(GetStoreEndpointName, new { id = store.id }, store);
-        });
+        })
+        .WithParameterValidation();
 
 
 
 
         // PUT
-        app.MapPut("/petStores/{id}", (int id, UpdatedPetStoreDTO updatedPetStoreDTO) =>
+        group.MapPut("/{id}", (int id, UpdatedPetStoreDTO updatedPetStoreDTO) =>
         {
             var index = petStores.FindIndex(store => store.id == id); // Correctly compare the id property
 
@@ -97,11 +105,11 @@ public static class StoresEndPoints
 
         // DELETE /
 
-        app.MapDelete("/petStores/{id}", (int id) =>
+        group.MapDelete("/{id}", (int id) =>
         {
             petStores.RemoveAll(store => store.id == id);
             return Results.NoContent();
         });
-        return app;
+        return group;
     }
 }
