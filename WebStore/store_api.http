@@ -1,0 +1,47 @@
+GET http://localhost:5134/petStores
+
+###
+GET http://localhost:5134/petStores/1
+
+###
+GET http://localhost:5134/petStores/2
+
+###
+GET http://localhost:5134/petStores/4
+
+###
+POST  http://localhost:5134/petStores
+Content-Type: application/json
+
+{
+    "itemId": "F-002",
+    "productId": "F-FM-002",
+    "petType": "Fish",
+    "gender": "Female",
+    "petDescription": "Big",
+    "price": 98.01,
+    "birthDay": "2023-09-09"
+}
+
+###
+PUT  http://localhost:5134/petStores/4
+Content-Type: application/json
+
+{
+    "itemId": "F-002",
+    "productId": "F-FM-002",
+    "petType": "Fish",
+    "gender": "Female",
+    "petDescription": "Big",
+    "price": 198.01,
+    "birthDay": "2023-09-09"
+}
+
+###
+DELETE   http://localhost:5134/petStores/1
+
+###
+DELETE   http://localhost:5134/petStores/211
+
+###
+DELETE   http://localhost:5134/petStores/3
