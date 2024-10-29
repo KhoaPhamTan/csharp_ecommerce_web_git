@@ -16,7 +16,8 @@ Content-Type: application/json
 {
     "itemId": "F-002",
     "productId": "F-FM-002",
-    "petType": "Fish",
+    "petTypeId": 2,
+    "petType": "Cat",
     "gender": "Female",
     "petDescription": "Big",
     "price": 98.01,

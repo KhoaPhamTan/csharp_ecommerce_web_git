@@ -18,6 +18,14 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\khoapham\OneDrive - NASHTECH\Khoa Pham\Git\csharp_ecommerce_web_git\PetStoreUI
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/khoapham/OneDrive - NASHTECH/Khoa Pham/Git/csharp_ecommerce_web_git/PetStoreUI/Pages/Cart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2FydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/khoapham/OneDrive - NASHTECH/Khoa Pham/Git/csharp_ecommerce_web_git/PetStoreUI/Pages/EditPet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRWRpdFBldC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/khoapham/OneDrive - NASHTECH/Khoa Pham/Git/csharp_ecommerce_web_git/PetStoreUI/Pages/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -26,8 +34,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/khoapham/OneDrive - NASHTECH/Khoa Pham/Git/csharp_ecommerce_web_git/PetStoreUI/Pages/PetDetail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGV0RGV0YWlsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/khoapham/OneDrive - NASHTECH/Khoa Pham/Git/csharp_ecommerce_web_git/PetStoreUI/Pages/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpdmFjeS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/khoapham/OneDrive - NASHTECH/Khoa Pham/Git/csharp_ecommerce_web_git/PetStoreUI/Pages/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVnaXN0ZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/khoapham/OneDrive - NASHTECH/Khoa Pham/Git/csharp_ecommerce_web_git/PetStoreUI/Pages/Shared/_ValidationScriptsPartial.cshtml]

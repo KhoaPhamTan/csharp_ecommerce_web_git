@@ -1,25 +1,22 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorPages();
+// Load the configuration from appsettings.json
+var configuration = builder.Configuration;
+
+// Add HttpClient with the base address from configuration
+builder.Services.AddHttpClient("PetStoreAPI", client =>
+{
+    var petStoreApiUrl = configuration["ApiSettings:PetStoreApiUrl"];
+    client.BaseAddress = new Uri(petStoreApiUrl);
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
 app.MapRazorPages();
-
 app.Run();

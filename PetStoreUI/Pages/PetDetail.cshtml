@@ -1,0 +1,14 @@
+@inject CartService CartService
+
+<h2>Pet Details</h2>
+<p>Product ID: @Model.Pet.ProductId</p>
+<p>Description: @Model.Pet.PetDescription</p>
+
+<button @onclick="AddToCart">Add to Cart</button>
+
+@code {
+    async Task AddToCart()
+    {
+        await CartService.AddToCartAsync(Model.Pet.Id, 1);
+    }
+}

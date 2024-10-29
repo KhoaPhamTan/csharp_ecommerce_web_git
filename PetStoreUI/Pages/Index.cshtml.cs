@@ -1,19 +1,18 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-
-namespace PetStoreUI.Pages;
+using PetStoreAPI.Services; // Kiểm tra xem tên dịch vụ có đúng không
+using PetStoreLibrary; // Kiểm tra xem namespace cho DTOs
 
 public class IndexModel : PageModel
 {
-    private readonly ILogger<IndexModel> _logger;
+    private readonly PetStoreService _petService;
 
-    public IndexModel(ILogger<IndexModel> logger)
+    public IndexModel(PetStoreService petService)
     {
-        _logger = logger;
+        _petService = petService;
     }
 
-    public void OnGet()
+    public async Task OnGetAsync()
     {
-
+        var pets = await _petService.GetAllPetsAsync();
     }
 }
