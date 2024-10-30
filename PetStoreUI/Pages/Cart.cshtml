@@ -1,9 +1,0 @@
-@inject CartService CartService
-
-<h1>Your Cart</h1>
-<ul>
-    @foreach (var item in await CartService.GetCartItemsAsync())
-    {
-        <li>@item.Pet.ProductId - Quantity: @item.Quantity</li>
-    }
-</ul>

@@ -1,9 +1,0 @@
-﻿@inject PetStoreService PetService
-
-<h1>Pet Store</h1>
-<ul>
-    @foreach (var pet in await PetService.GetAllPetsAsync())
-    {
-        <li>@pet.ProductId - @pet.PetDescription - @pet.Price</li>
-    }
-</ul>
