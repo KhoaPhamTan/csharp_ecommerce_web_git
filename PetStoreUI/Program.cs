@@ -40,7 +40,7 @@ app.MapGet("/", context =>
     return Task.CompletedTask;
 });
 
-// Map Razor Pages
+// Map Razor Pages//update
 app.MapRazorPages();
 
 app.Run();
