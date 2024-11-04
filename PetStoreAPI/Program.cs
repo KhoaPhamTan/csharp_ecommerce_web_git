@@ -37,6 +37,7 @@ app.MapStoresEndPoints();
 app.MapCartEndpoints();
 app.MapRegistrationEndpoints();
 app.MapPetTypeEndpoints(); // Ánh xạ các endpoint cho PetType
+app.MapPetEndpoints();
 
 // Chạy ứng dụng
 app.Run();

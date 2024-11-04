@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Pet Store</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/homeCategoryStyle.css" />
+    <link rel="stylesheet" href="~/css/homeFeatureStyle.css" />
+</head>
+
+<body>
+    <header>
+        <div class="header-title">Pet Store</div>
+        <nav class="navbar">
+            <ul class="nav">
+                <li class="nav-item">
+                    <a class="nav-link @(ViewData["ActivePage"]?.ToString() == "Home" ? "active" : "")"
+                        href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewData["ActivePage"]?.ToString() == "Privacy" ? "active" : "")"
+                        href="/Home/Privacy">Privacy</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(ViewData["ActivePage"]?.ToString() == "Help" ? "active" : "")"
+                        href="/Home/Help">Help</a>
+                </li>
+            </ul>
+            <div class="nav-right">
+                <a href="/Cart">
+                    <img src="~/images/cart-icon.png" alt="Cart" />
+                </a>
+            </div>
+        </nav>
+    </header>
+    <main role="main" class="container">
+        @RenderBody()
+    </main>
+    <footer>
+        <p>&copy; 2024 - Pet Store</p>
+    </footer>
+</body>
+
+</html>

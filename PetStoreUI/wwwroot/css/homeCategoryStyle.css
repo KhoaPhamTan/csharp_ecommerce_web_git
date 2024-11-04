@@ -1,0 +1,27 @@
+.table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: separate; /* Loại bỏ khoảng cách giữa các ô */
+}
+
+.table th, .table td {
+    text-align: left;
+    padding: 10px; /* Thêm padding cho ô */
+    border: 1px solid black; /* Đường viền cho các ô */
+}
+
+/* Màu nền cho các ô */
+.table tr:nth-child(even) {
+    background-color: #ecdcdc; /* Màu nền cho hàng chẵn */
+}
+
+.table tr:hover {
+    background-color: #186b46; /* Màu nền khi di chuột qua hàng */
+}
+
+/* Màu chữ cho tiêu đề bảng */
+.table th {
+    background-color: #260e66; /* Màu nền cho tiêu đề bảng */
+    color: white; /* Màu chữ cho tiêu đề bảng */
+    font-weight: bold; /* Đậm chữ cho tiêu đề */
+}

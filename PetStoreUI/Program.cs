@@ -1,28 +1,20 @@
+using Microsoft.EntityFrameworkCore;
+using PetStoreAPI.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Load the configuration from appsettings.json
-var configuration = builder.Configuration;
-var petStoreApiUrl = configuration["ApiSettings:PetStoreApiUrl"];
-if (string.IsNullOrEmpty(petStoreApiUrl))
-{
-    throw new InvalidOperationException("The PetStoreApiUrl configuration is missing or empty.");
-}
-
-// Add HttpClient with the base address from configuration
-builder.Services.AddHttpClient("PetStoreAPI", client =>
-{
-    client.BaseAddress = new Uri(petStoreApiUrl);
-});
-
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient(); // Đăng ký HttpClient
+builder.Services.AddDbContext<PetStoreDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("PetStore"))); // Sử dụng chuỗi kết nối đã định nghĩa
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
@@ -33,14 +25,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-// Cấu hình chuyển hướng từ / sang /Home/Index
-app.MapGet("/", context =>
-{
-    context.Response.Redirect("/Home/Index");
-    return Task.CompletedTask;
-});
-
-// Map Razor Pages//update
-app.MapRazorPages();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
