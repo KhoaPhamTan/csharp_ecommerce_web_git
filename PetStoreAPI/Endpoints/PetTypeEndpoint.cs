@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using PetStoreAPI.Data;
+using PetStoreLibrary.DTOs;
 
 
 namespace PetStoreAPI.Endpoints;

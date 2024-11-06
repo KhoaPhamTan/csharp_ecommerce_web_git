@@ -1,11 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
 using System.Text.Json;
-using PetStoreLibrary; // Tham chiếu đến Library
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using PetStoreLibrary.DTOs; // Tham chiếu đến Library
 
-namespace YourMvcProject.Controllers
+namespace PetStore.Controllers
 {
     public class PetStoreController : Controller
     {

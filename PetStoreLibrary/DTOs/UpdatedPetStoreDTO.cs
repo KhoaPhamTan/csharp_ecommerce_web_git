@@ -1,4 +1,4 @@
-namespace PetStoreLibrary;
+namespace PetStoreLibrary.DTOs;
 public record UpdatedPetStoreDTO(
     int Id, 
     string ItemId, 

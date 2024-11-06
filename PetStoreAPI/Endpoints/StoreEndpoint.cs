@@ -2,7 +2,7 @@ using PetStoreAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using PetStoreAPI.Entities;
-using PetStoreLibrary;
+using PetStoreLibrary.DTOs;
 
 namespace PetStoreAPI.EndPoints
 {

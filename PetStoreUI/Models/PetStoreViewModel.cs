@@ -1,5 +1,5 @@
-using PetStoreLibrary;
-
+using PetStoreLibrary.DTOs;
+using System.Collections.Generic; 
 public class PetStoreViewModel
 {
     public List<PetStoreDTO> PetStores { get; set; }

@@ -1,44 +1,33 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using PetStoreAPI.Data;
-using PetStoreAPI.Entities; // Namespace cho PetTypeEntity
+using PetStoreUI.Services;
+using PetStoreLibrary.DTOs;
 using System.Collections.Generic;
-using System.Net.Http.Json;
-using System.Threading.Tasks;
+using System.Diagnostics; // Thêm chỉ thị này nếu chưa có
+using PetStoreUI.Models; // Thêm chỉ thị này nếu chưa có
 
-namespace PetStoreMVC.Controllers
+namespace PetStoreUI.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly HttpClient _httpClient;
-        private readonly PetStoreDbContext _context; // DbContext
+        private readonly IPetService _petService;
 
-        public HomeController(HttpClient httpClient, PetStoreDbContext context)
+        public HomeController(IPetService petService)
         {
-            _httpClient = httpClient;
-            _context = context; // Khởi tạo DbContext
+            _petService = petService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            ViewData["ActivePage"] = "Home"; // Set active page
-
-            // Lấy danh sách Pet Types từ cơ sở dữ liệu
-            var petTypes = await _context.PetTypes.ToListAsync(); // Sử dụng ToListAsync
-
-            return View(petTypes); // Trả về view với danh sách pet types
-        }
-
-        public IActionResult Privacy()
-        {
-            ViewData["ActivePage"] = "Privacy"; // Set active page
-            return View();
-        }
-
-        public IActionResult Help()
-        {
-            ViewData["ActivePage"] = "Help"; // Set active page
-            return View();
+            try
+            {
+                List<PetTypeDTO> petTypes = _petService.GetAllPetTypes();
+                return View(petTypes);
+            }
+            catch (Exception)
+            {
+                // Xử lý ngoại lệ mà không cần sử dụng biến ex
+                return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            }
         }
     }
 }

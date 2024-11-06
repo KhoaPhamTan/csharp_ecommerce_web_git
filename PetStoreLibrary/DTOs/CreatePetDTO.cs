@@ -1,4 +1,4 @@
-namespace PetStoreLibrary;
+namespace PetStoreLibrary.DTOs;
 public record CreatePetDTO(
     string ItemId, 
     string ProductId, 

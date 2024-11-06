@@ -1,22 +1,30 @@
-﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Đảm bảo layout đúng
-}
+﻿@page
+@using PetStoreLibrary.DTOs
+@model IEnumerable<PetTypeDTO>
 
-<h1>Pet Categories</h1>
-<div class="tables-container">
-    <div class="pet-categories">
-        @foreach (var petType in Model)
-        {
-            <div class="pet-category">@petType.Name</div> <!-- Hiển thị các loại thú cưng -->
-        }
-    </div>
-
-    <div class="features">
-        <h2>Features</h2>
+<div class="container">
+    <div class="category-menu">
+        <h2>Category Menu</h2>
         <ul>
-            <li>Feature 1</li>
-            <li>Feature 2</li>
-            <li>Feature 3</li>
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var petType in Model)
+                {
+                    <li onclick="loadFeatures('@petType.Name')">
+                        <i class="fa fa-paw"></i> @petType.Name
+                    </li>
+                }
+            }
         </ul>
     </div>
+
+    <div class="featured-product">
+        <h2>Featured Product</h2>
+        <div id="product-list" class="product-list">
+            <!-- Các sản phẩm sẽ được tải qua JavaScript -->
+        </div>
+    </div>
 </div>
+
+<!-- Tham chiếu tới file JavaScript app.js -->
+<script src="~/js/app.js"></script>

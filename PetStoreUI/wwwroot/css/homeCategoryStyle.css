@@ -1,27 +1,40 @@
-.table {
-    width: 100%;
-    margin-top: 20px;
-    border-collapse: separate; /* Loại bỏ khoảng cách giữa các ô */
+/* Style for Category Menu */
+.container {
+    display: flex;
+    gap: 20px;
 }
 
-.table th, .table td {
-    text-align: left;
-    padding: 10px; /* Thêm padding cho ô */
-    border: 1px solid black; /* Đường viền cho các ô */
+.category-menu {
+    width: 25%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #f8f9fa;
 }
 
-/* Màu nền cho các ô */
-.table tr:nth-child(even) {
-    background-color: #ecdcdc; /* Màu nền cho hàng chẵn */
+.category-menu h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
 }
 
-.table tr:hover {
-    background-color: #186b46; /* Màu nền khi di chuột qua hàng */
+.category-menu ul {
+    list-style: none;
+    padding: 0;
 }
 
-/* Màu chữ cho tiêu đề bảng */
-.table th {
-    background-color: #260e66; /* Màu nền cho tiêu đề bảng */
-    color: white; /* Màu chữ cho tiêu đề bảng */
-    font-weight: bold; /* Đậm chữ cho tiêu đề */
+.category-menu li {
+    padding: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    font-size: 1em;
+}
+
+.category-menu li:hover {
+    background-color: #e2e6ea;
+}
+
+.category-menu li i {
+    margin-right: 8px;
 }
