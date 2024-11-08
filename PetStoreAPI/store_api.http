@@ -12,19 +12,22 @@ GET http://localhost:5134/petStores/2
 
 ###
 GET http://localhost:5134/petStores/4
+###
+
+GET http://localhost:5134/petStores
 
 ###
 POST  http://localhost:5134/petStores
 Content-Type: application/json
 
 {
-    "PetName": "Bull Dog",
-    "CategoryName": "Dog",
+    "PetName": "Zebra",
+    "CategoryName": "Others",
     "gender": "Male",
-    "petDescription": "Big",
-    "price": 98.01,
-    "birthDay": "2023-09-09",
-    "ImageUrl": "images/Dog1.jpg"
+    "petDescription": "Black and white horse, 40 years life plain",
+    "price": 50000.01,
+    "birthDay": "2021-08-08",
+    "ImageUrl": "images/Others/zebra.jpg"
 }
 
 
@@ -116,18 +119,19 @@ Content-Type: application/json
     "price": 99998.01,
     "birthDay": "2023-09-09"
 }
+
 ###
-PUT  http://localhost:5134/petStores/4
+PUT  http://localhost:5134/petStores/5
 Content-Type: application/json
 
 {
-    "PetName": "Adrienne Legault",
-    "CategoryName": "Fish",
-    "gender": "FemalMale",
-    "petDescription": "Big",
-    "price": 98.01,
-    "birthDay": "2023-09-09",
-    "ImageUrl": "images/fish1.jpg"
+    "PetName": "Fancy Guppies",
+    "CategoryName": "Cat",
+    "gender": "Female",
+    "petDescription": "Red",
+    "price": 9.01,
+    "birthDay": "2023-11-09",
+    "ImageUrl": "images/Fish/Fancy Guppies.jpg"
 }
 
 ###
