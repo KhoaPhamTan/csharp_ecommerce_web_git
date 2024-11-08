@@ -14,7 +14,7 @@ namespace PetStoreAPI.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "PetTypes",
+                name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -23,7 +23,7 @@ namespace PetStoreAPI.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PetTypes", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -50,21 +50,21 @@ namespace PetStoreAPI.Data.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    ItemId = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    ProductId = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    PetTypeId = table.Column<int>(type: "INTEGER", nullable: false),
+                    PetName = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     Gender = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
                     PetDescription = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    BirthDay = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    BirthDay = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ImageUrl = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    CategoryId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PetStores", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PetStores_PetTypes_PetTypeId",
-                        column: x => x.PetTypeId,
-                        principalTable: "PetTypes",
+                        name: "FK_PetStores_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -91,15 +91,16 @@ namespace PetStoreAPI.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "PetTypes",
+                table: "Categories",
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
                     { 1, "Cat" },
                     { 2, "Dog" },
                     { 3, "Fish" },
-                    { 4, "Insert" },
-                    { 5, "Others" }
+                    { 4, "Insect" },
+                    { 5, "Bird" },
+                    { 6, "Others" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -108,9 +109,9 @@ namespace PetStoreAPI.Data.Migrations
                 column: "PetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PetStores_PetTypeId",
+                name: "IX_PetStores_CategoryId",
                 table: "PetStores",
-                column: "PetTypeId");
+                column: "CategoryId");
         }
 
         /// <inheritdoc />
@@ -126,7 +127,7 @@ namespace PetStoreAPI.Data.Migrations
                 name: "PetStores");
 
             migrationBuilder.DropTable(
-                name: "PetTypes");
+                name: "Categories");
         }
     }
 }

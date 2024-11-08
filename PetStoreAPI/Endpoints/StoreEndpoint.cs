@@ -2,7 +2,7 @@ using PetStoreAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using PetStoreAPI.Entities;
-using PetStoreLibrary;
+using PetStoreLibrary.DTOs;
 
 namespace PetStoreAPI.EndPoints
 {
@@ -15,21 +15,21 @@ namespace PetStoreAPI.EndPoints
             // GET: Lấy danh sách tất cả pet stores
             group.MapGet("/", async (PetStoreDbContext db) =>
             {
-                var pets = await db.PetStores.Include(p => p.PetType).ToListAsync();
+                var pets = await db.PetStores.Include(pet => pet.Category).ToListAsync();
                 if (!pets.Any())
                 {
                     return Results.NotFound(new { Message = "No pet stores found." });
                 }
 
-                var petDtos = pets.Select(p => new PetStoreDTO(
-                    p.Id,
-                    p.ItemId,
-                    p.ProductId,
-                    p.PetType.Name,
-                    p.Gender,
-                    p.PetDescription,
-                    p.Price,
-                    DateOnly.FromDateTime(p.BirthDay) // Convert DateTime to DateOnly
+                var petDtos = pets.Select(pet => new PetStoreDTO(
+                    pet.Id,
+                    pet.PetName,
+                    new CategoryDTO(pet.Category.Id, pet.Category.Name), // Use CategoryDTO
+                    pet.Gender,
+                    pet.PetDescription,
+                    pet.Price,
+                    DateOnly.FromDateTime(pet.BirthDay), // Convert DateTime to DateOnly
+                    pet.ImageUrl // Add ImageUrl property
                 )).ToList();
                 
                 return Results.Ok(petDtos);
@@ -38,7 +38,7 @@ namespace PetStoreAPI.EndPoints
             // GET: Lấy thông tin pet store theo ID
             group.MapGet("/{id}", async (int id, PetStoreDbContext db) =>
             {
-                var pet = await db.PetStores.Include(p => p.PetType).FirstOrDefaultAsync(p => p.Id == id);
+                var pet = await db.PetStores.Include(pet => pet.Category).FirstOrDefaultAsync(pet => pet.Id == id);
                 if (pet is null)
                 {
                     return Results.NotFound(new { Message = "Pet store not found." });
@@ -46,13 +46,13 @@ namespace PetStoreAPI.EndPoints
 
                 var petDto = new PetStoreDTO(
                     pet.Id,
-                    pet.ItemId,
-                    pet.ProductId,
-                    pet.PetType.Name,
+                    pet.PetName,
+                    new CategoryDTO(pet.Category.Id, pet.Category.Name), // Use CategoryDTO
                     pet.Gender,
                     pet.PetDescription,
                     pet.Price,
-                    DateOnly.FromDateTime(pet.BirthDay)
+                    DateOnly.FromDateTime(pet.BirthDay),
+                    pet.ImageUrl // Add ImageUrl property
                 );
 
                 return Results.Ok(petDto);
@@ -61,9 +61,7 @@ namespace PetStoreAPI.EndPoints
             // POST: Tạo pet store mới
             group.MapPost("/", async ([FromBody] CreatePetDTO newPet, PetStoreDbContext db) =>
             {
-                if (string.IsNullOrWhiteSpace(newPet.ItemId) || 
-                    string.IsNullOrWhiteSpace(newPet.ProductId) || 
-                    newPet.PetTypeId <= 0 || 
+                if (string.IsNullOrWhiteSpace(newPet.PetName) || 
                     string.IsNullOrWhiteSpace(newPet.Gender) || 
                     string.IsNullOrWhiteSpace(newPet.PetDescription) || 
                     newPet.Price <= 0)
@@ -71,22 +69,21 @@ namespace PetStoreAPI.EndPoints
                     return Results.BadRequest(new { Message = "All fields are required and price must be positive." });
                 }
 
-                var petType = await db.PetTypes.FindAsync(newPet.PetTypeId);
-                if (petType == null)
+                var category = await db.Categories.FirstOrDefaultAsync(c => c.Name == newPet.CategoryName);
+                if (category == null)
                 {
-                    return Results.BadRequest(new { Message = "Invalid PetTypeId." });
+                    return Results.BadRequest(new { Message = "Invalid Category." });
                 }
 
                 var pet = new PetStoreEntity
                 {
-                    ItemId = newPet.ItemId,
-                    ProductId = newPet.ProductId,
-                    PetTypeId = newPet.PetTypeId,
-                    PetType = petType,
+                    PetName = newPet.PetName,
+                    Category = category, // Use Category
                     Gender = newPet.Gender,
                     PetDescription = newPet.PetDescription,
                     Price = newPet.Price,
-                    BirthDay = newPet.BirthDay.ToDateTime(TimeOnly.MinValue)
+                    BirthDay = newPet.BirthDay.ToDateTime(TimeOnly.MinValue),
+                    ImageUrl = newPet.ImageUrl // Add ImageUrl property
                 };
 
                 db.PetStores.Add(pet);
@@ -97,15 +94,13 @@ namespace PetStoreAPI.EndPoints
             // PUT: Cập nhật pet store theo ID
             group.MapPut("/{id}", async (int id, [FromBody] UpdatedPetStoreDTO updatedPet, PetStoreDbContext db) =>
             {
-                var pet = await db.PetStores.FindAsync(id);
+                var pet = await db.PetStores.Include(pet => pet.Category).FirstOrDefaultAsync(pet => pet.Id == id);
                 if (pet == null)
                 {
                     return Results.NotFound(new { Message = "Pet store not found." });
                 }
 
-                if (string.IsNullOrWhiteSpace(updatedPet.ItemId) || 
-                    string.IsNullOrWhiteSpace(updatedPet.ProductId) || 
-                    updatedPet.PetTypeId <= 0 || 
+                if (string.IsNullOrWhiteSpace(updatedPet.PetName) || 
                     string.IsNullOrWhiteSpace(updatedPet.Gender) || 
                     string.IsNullOrWhiteSpace(updatedPet.PetDescription) || 
                     updatedPet.Price <= 0)
@@ -113,13 +108,19 @@ namespace PetStoreAPI.EndPoints
                     return Results.BadRequest(new { Message = "All fields are required and price must be positive." });
                 }
 
-                pet.ItemId = updatedPet.ItemId;
-                pet.ProductId = updatedPet.ProductId;
-                pet.PetTypeId = updatedPet.PetTypeId;
+                var category = await db.Categories.FirstOrDefaultAsync(c => c.Name == updatedPet.CategoryName);
+                if (category == null)
+                {
+                    return Results.BadRequest(new { Message = "Invalid Category." });
+                }
+
+                pet.PetName = updatedPet.PetName;
+                pet.Category = category; // Use Category
                 pet.Gender = updatedPet.Gender;
                 pet.PetDescription = updatedPet.PetDescription;
                 pet.Price = updatedPet.Price;
                 pet.BirthDay = updatedPet.BirthDay.ToDateTime(TimeOnly.MinValue);
+                pet.ImageUrl = updatedPet.ImageUrl; // Add ImageUrl property
 
                 await db.SaveChangesAsync();
                 return Results.NoContent();

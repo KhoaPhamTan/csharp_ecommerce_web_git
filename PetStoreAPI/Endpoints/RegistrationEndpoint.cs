@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using PetStoreAPI.Data;
-using PetStoreLibrary;
+using PetStoreLibrary.DTOs;
 using PetStoreAPI.Entities;
 using Microsoft.EntityFrameworkCore; // Thêm dòng này
 using System.Security.Cryptography;

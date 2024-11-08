@@ -39,50 +39,7 @@ namespace PetStoreAPI.Data.Migrations
                     b.ToTable("CartItems");
                 });
 
-            modelBuilder.Entity("PetStoreAPI.Entities.PetStoreEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("BirthDay")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ItemId")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("PetDescription")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("PetTypeId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<decimal>("Price")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ProductId")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PetTypeId");
-
-                    b.ToTable("PetStores", (string)null);
-                });
-
-            modelBuilder.Entity("PetStoreAPI.Entities.PetTypeEntity", b =>
+            modelBuilder.Entity("PetStoreAPI.Entities.CategoryEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -94,7 +51,7 @@ namespace PetStoreAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PetTypes");
+                    b.ToTable("Categories");
 
                     b.HasData(
                         new
@@ -120,8 +77,56 @@ namespace PetStoreAPI.Data.Migrations
                         new
                         {
                             Id = 5,
+                            Name = "Bird"
+                        },
+                        new
+                        {
+                            Id = 6,
                             Name = "Others"
                         });
+                });
+
+            modelBuilder.Entity("PetStoreAPI.Entities.PetStoreEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("BirthDay")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PetDescription")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PetName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("PetStores", (string)null);
                 });
 
             modelBuilder.Entity("PetStoreAPI.Entities.UserEntity", b =>
@@ -171,13 +176,13 @@ namespace PetStoreAPI.Data.Migrations
 
             modelBuilder.Entity("PetStoreAPI.Entities.PetStoreEntity", b =>
                 {
-                    b.HasOne("PetStoreAPI.Entities.PetTypeEntity", "PetType")
+                    b.HasOne("PetStoreAPI.Entities.CategoryEntity", "Category")
                         .WithMany()
-                        .HasForeignKey("PetTypeId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("PetType");
+                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }

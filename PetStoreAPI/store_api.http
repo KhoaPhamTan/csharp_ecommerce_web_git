@@ -2,7 +2,7 @@ GET http://localhost:5134/petStores
 
 ###
 
-GET http://localhost:5134/petTypes
+GET http://localhost:5134/Categories
 
 ###
 GET http://localhost:5134/petStores/1
@@ -18,15 +18,89 @@ POST  http://localhost:5134/petStores
 Content-Type: application/json
 
 {
-    "itemId": "D-001",
-    "productId": "D-FM-001",
-    "petTypeId": 2,
-    "petType": "Dog",
-    "gender": "Female",
+    "PetName": "Bull Dog",
+    "CategoryName": "Dog",
+    "gender": "Male",
     "petDescription": "Big",
     "price": 98.01,
-    "birthDay": "2023-09-09"
+    "birthDay": "2023-09-09",
+    "ImageUrl": "images/Dog1.jpg"
 }
+
+
+###
+POST  http://localhost:5134/petStores
+Content-Type: application/json
+
+{
+    "PetName": "BulBrishtish long hair",
+    "CategoryName": "Cat",
+    "gender": "Male",
+    "petDescription": "Big",
+    "price": 98.01,
+    "birthDay": "2023-09-09",
+    "ImageUrl": "images/Cat1.jpg"
+}
+
+###
+POST  http://localhost:5134/petStores
+Content-Type: application/json
+
+{
+    "PetName": "BulBrishtish long hair",
+    "CategoryName": "Cat",
+    "gender": "FemalMale",
+    "petDescription": "Big",
+    "price": 98.01,
+    "birthDay": "2023-09-09",
+    "ImageUrl": "images/Cat1.jpg"
+}
+
+
+###
+POST  http://localhost:5134/petStores
+Content-Type: application/json
+
+{
+    "PetName": "Adrienne Legault",
+    "CategoryName": "Fish",
+    "gender": "FemalMale",
+    "petDescription": "Big",
+    "price": 98.01,
+    "birthDay": "2023-09-09",
+    "ImageUrl": "images/Cat1.jpg"
+}
+
+###
+POST  http://localhost:5134/petStores
+Content-Type: application/json
+
+{
+    "PetName": "Parakeets",
+    "CategoryName": "Bird",
+    "gender": "FemalMale",
+    "petDescription": "Big",
+    "price": 98.01,
+    "birthDay": "2023-09-09",
+    "ImageUrl": "images/Parakeets.jpg"
+}
+
+###
+POST  http://localhost:5134/petStores
+Content-Type: application/json
+
+{
+    "PetName": "Spider",
+    "CategoryName": "Insect",
+    "gender": "FemalMale",
+    "petDescription": "Big",
+    "price": 98.01,
+    "birthDay": "2023-09-09",
+    "ImageUrl": "images/spider.jpg"
+}
+
+
+
 
 
 ### wrong Type
@@ -43,18 +117,17 @@ Content-Type: application/json
     "birthDay": "2023-09-09"
 }
 ###
-PUT  http://localhost:5134/petStores/1
+PUT  http://localhost:5134/petStores/4
 Content-Type: application/json
 
 {
-    "itemId": "C-001",
-    "productId": "C-FM-001",
-    "petTypeId": 1,
-    "petType": "Cat",
-    "gender": "Female",
+    "PetName": "Adrienne Legault",
+    "CategoryName": "Fish",
+    "gender": "FemalMale",
     "petDescription": "Big",
     "price": 98.01,
-    "birthDay": "2023-09-09"
+    "birthDay": "2023-09-09",
+    "ImageUrl": "images/fish1.jpg"
 }
 
 ###
@@ -65,3 +138,16 @@ DELETE   http://localhost:5134/petStores/211
 
 ###
 DELETE   http://localhost:5134/petStores/3
+
+
+### wrong Type
+POST  http://localhost:5134/registration
+Content-Type: application/json
+
+{
+    "Username": "Khoa Pham" , 
+     "Password": "1234567890", 
+     "FullName": "Khoa Pham", 
+     "Email": "khoapham.1234567@gmail.com", 
+     "Address": "121, 3/2 Street, District 10, HCM City"
+}

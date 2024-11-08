@@ -1,32 +1,37 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PetStoreAPI.Data;
-using PetStoreAPI.Entities; // Namespace cho PetTypeEntity
-using System.Collections.Generic;
-using System.Net.Http.Json;
+using PetStoreLibrary.DTOs;
+using PetStoreUI.Models;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace PetStoreMVC.Controllers
+namespace PetStoreUI.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly HttpClient _httpClient;
-        private readonly PetStoreDbContext _context; // DbContext
+        private readonly PetStoreDbContext _context;
 
-        public HomeController(HttpClient httpClient, PetStoreDbContext context)
+        public HomeController(PetStoreDbContext context)
         {
-            _httpClient = httpClient;
-            _context = context; // Khởi tạo DbContext
+            _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string category = "Cat")
         {
             ViewData["ActivePage"] = "Home"; // Set active page
 
-            // Lấy danh sách Pet Types từ cơ sở dữ liệu
-            var petTypes = await _context.PetTypes.ToListAsync(); // Sử dụng ToListAsync
+            // Get list of Categories from the database
+            var categories = await _context.Categories.ToListAsync(); // Use ToListAsync
 
-            return View(petTypes); // Trả về view với danh sách pet types
+            var categoryDTOs = categories.Select(c => new CategoryDTO(c.Id, c.Name)).ToList();
+
+            var viewModel = new PetStoreViewModel
+            {
+                Categories = categoryDTOs
+            };
+
+            return View(viewModel); // Return view with list of categories
         }
 
         public IActionResult Privacy()

@@ -1,11 +1,11 @@
-namespace PetStoreLibrary;
+namespace PetStoreLibrary.DTOs;
 
 public record PetStoreDTO(
     int Id, 
-    string ItemId, 
-    string ProductId, 
-    string PetType, // Duy trì là chuỗi
+    string PetName, 
+    CategoryDTO Category, // Link to CategoryDTO
     string Gender, 
     string PetDescription, 
     decimal Price, 
-    DateOnly BirthDay);
+    DateOnly BirthDay,
+    string ImageUrl);

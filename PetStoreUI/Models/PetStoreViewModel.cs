@@ -1,13 +1,15 @@
-using PetStoreLibrary;
+using PetStoreLibrary.DTOs;
+using System.Collections.Generic;
 
-public class PetStoreViewModel
+namespace PetStoreUI.Models // Ensure the namespace is correct
 {
-    public List<PetStoreDTO> PetStores { get; set; }
-    public List<PetTypeDTO> PetTypes { get; set; }
-
-    public PetStoreViewModel()
+    public class PetStoreViewModel
     {
-        PetStores = new List<PetStoreDTO>(); // Khởi tạo danh sách rỗng
-        PetTypes = new List<PetTypeDTO>();   // Khởi tạo danh sách rỗng
+        public IEnumerable<CategoryDTO> Categories { get; set; }
+
+        public PetStoreViewModel()
+        {
+            Categories = new List<CategoryDTO>(); // Initialize with empty list
+        }
     }
 }

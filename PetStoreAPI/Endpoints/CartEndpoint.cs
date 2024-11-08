@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PetStoreAPI.Data;
 using Microsoft.EntityFrameworkCore;
-using PetStoreLibrary;
+using PetStoreLibrary.DTOs;
 using PetStoreAPI.Entities;
 
 namespace PetStoreAPI.Endpoints

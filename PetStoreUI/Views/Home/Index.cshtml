@@ -1,22 +1,8 @@
-﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml"; // Đảm bảo layout đúng
+﻿@page
+@model PetStoreUI.Models.PetStoreViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Pet Categories</h1>
-<div class="tables-container">
-    <div class="pet-categories">
-        @foreach (var petType in Model)
-        {
-            <div class="pet-category">@petType.Name</div> <!-- Hiển thị các loại thú cưng -->
-        }
-    </div>
-
-    <div class="features">
-        <h2>Features</h2>
-        <ul>
-            <li>Feature 1</li>
-            <li>Feature 2</li>
-            <li>Feature 3</li>
-        </ul>
-    </div>
-</div>
+<p>Your one-stop shop for all your pet needs.</p>

@@ -12,11 +12,7 @@ namespace PetStoreAPI.Mappings
 
             builder.HasKey(p => p.Id);
 
-            builder.Property(p => p.ItemId)
-                .IsRequired()
-                .HasMaxLength(50);
-
-            builder.Property(p => p.ProductId)
+            builder.Property(p => p.PetName)
                 .IsRequired()
                 .HasMaxLength(50);
 
@@ -34,10 +30,14 @@ namespace PetStoreAPI.Mappings
             builder.Property(p => p.BirthDay)
                 .IsRequired(); // Assuming BirthDay is a required field
 
-            // Configure the relationship with PetTypeEntity if necessary
-            builder.HasOne(p => p.PetType)
-                   .WithMany() // Adjust according to your model
-                   .HasForeignKey(p => p.PetTypeId);
+            builder.Property(p => p.ImageUrl)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            // Configure the relationship with CategoryEntity
+            builder.HasOne(p => p.Category)
+                   .WithMany()
+                   .HasForeignKey("CategoryId");
         }
     }
 }
