@@ -4,7 +4,7 @@ public class PetStoreDTO
 {
     public int Id { get; set; }
     public string PetName { get; set; }
-    public string CategoryName { get; set; } // Change to CategoryName to match other DTOs
+    public string CategoryName { get; set; } // Ensure this matches the category names in the database
     public string Gender { get; set; }
     public string PetDescription { get; set; }
     public decimal Price { get; set; }

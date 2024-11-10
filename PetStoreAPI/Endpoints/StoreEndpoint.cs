@@ -12,7 +12,6 @@ namespace PetStoreAPI.EndPoints
         {
             var group = app.MapGroup("/petStores");
 
-            // GET: Lấy danh sách tất cả pet stores
             group.MapGet("/", async (PetStoreDbContext db) =>
             {
                 var pets = await db.PetStores.Include(pet => pet.Category).ToListAsync();
@@ -24,18 +23,17 @@ namespace PetStoreAPI.EndPoints
                 var petDtos = pets.Select(pet => new PetStoreDTO(
                     pet.Id,
                     pet.PetName,
-                    pet.Category.Name, // Use Category name directly
+                    pet.Category.Name,
                     pet.Gender,
                     pet.PetDescription,
                     pet.Price,
-                    DateOnly.FromDateTime(pet.BirthDay), // Convert DateTime to DateOnly
-                    pet.ImageUrl // Add ImageUrl property
+                    DateOnly.FromDateTime(pet.BirthDay),
+                    pet.ImageUrl
                 )).ToList();
                 
                 return Results.Ok(petDtos);
             });
 
-            // GET: Lấy thông tin pet store theo ID
             group.MapGet("/{id}", async (int id, PetStoreDbContext db) =>
             {
                 var pet = await db.PetStores.Include(pet => pet.Category).FirstOrDefaultAsync(pet => pet.Id == id);
@@ -47,18 +45,17 @@ namespace PetStoreAPI.EndPoints
                 var petDto = new PetStoreDTO(
                     pet.Id,
                     pet.PetName,
-                    pet.Category.Name, // Use Category name directly
+                    pet.Category.Name,
                     pet.Gender,
                     pet.PetDescription,
                     pet.Price,
                     DateOnly.FromDateTime(pet.BirthDay),
-                    pet.ImageUrl // Add ImageUrl property
+                    pet.ImageUrl
                 );
 
                 return Results.Ok(petDto);
             });
 
-            // POST: Tạo pet store mới
             group.MapPost("/", async ([FromBody] CreatePetDTO newPet, PetStoreDbContext db) =>
             {
                 if (string.IsNullOrWhiteSpace(newPet.PetName) || 
@@ -78,12 +75,12 @@ namespace PetStoreAPI.EndPoints
                 var pet = new PetStoreEntity
                 {
                     PetName = newPet.PetName,
-                    Category = category, // Use Category
+                    Category = category,
                     Gender = newPet.Gender,
                     PetDescription = newPet.PetDescription,
                     Price = newPet.Price,
                     BirthDay = newPet.BirthDay.ToDateTime(TimeOnly.MinValue),
-                    ImageUrl = newPet.ImageUrl // Add ImageUrl property
+                    ImageUrl = newPet.ImageUrl
                 };
 
                 db.PetStores.Add(pet);
@@ -91,7 +88,6 @@ namespace PetStoreAPI.EndPoints
                 return Results.Created($"/petStores/{pet.Id}", pet);
             });
 
-            // PUT: Cập nhật pet store theo ID
             group.MapPut("/{id}", async (int id, [FromBody] UpdatedPetStoreDTO updatedPet, PetStoreDbContext db) =>
             {
                 var pet = await db.PetStores.Include(pet => pet.Category).FirstOrDefaultAsync(pet => pet.Id == id);
@@ -115,18 +111,17 @@ namespace PetStoreAPI.EndPoints
                 }
 
                 pet.PetName = updatedPet.PetName;
-                pet.Category = category; // Use Category
+                pet.Category = category;
                 pet.Gender = updatedPet.Gender;
                 pet.PetDescription = updatedPet.PetDescription;
                 pet.Price = updatedPet.Price;
                 pet.BirthDay = updatedPet.BirthDay.ToDateTime(TimeOnly.MinValue);
-                pet.ImageUrl = updatedPet.ImageUrl; // Add ImageUrl property
+                pet.ImageUrl = updatedPet.ImageUrl;
 
                 await db.SaveChangesAsync();
                 return Results.NoContent();
             });
 
-            // DELETE: Xóa pet store theo ID
             group.MapDelete("/{id}", async (int id, PetStoreDbContext db) =>
             {
                 var pet = await db.PetStores.FindAsync(id);
