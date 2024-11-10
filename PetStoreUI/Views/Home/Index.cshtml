@@ -1,7 +1,40 @@
 ﻿@page
 @using PetStoreAPI.Endpoints
+@using PetStoreAPI.Data
+@using PetStoreAPI.Entities
+@using PetStoreLibrary.DTOs
+@inject PetStoreDbContext DbContext
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var petStores = DbContext.PetStores
+        .Select(p => new PetStoreDTO(p.Id, p.PetName, p.Category.Name, p.Gender, p.PetDescription, p.Price, DateOnly.FromDateTime(p.BirthDay), p.ImageUrl))
+        .ToList();
 }
+
+<table class="table pet-table">
+    <tbody>
+        @for (int i = 0; i < petStores.Count; i += 3)
+        {
+            <tr>
+                @for (int j = i; j < i + 3 && j < petStores.Count; j++)
+                {
+                    <td>
+                        <img src="@petStores[j].ImageUrl" alt="Pet Image" class="pet-image" /><br />
+                        <strong>Pet Name:</strong> @petStores[j].PetName<br />
+                        <strong>Category:</strong> @petStores[j].CategoryName<br />
+                        <strong>Gender:</strong> @petStores[j].Gender<br />
+                        <strong>Description:</strong> @petStores[j].PetDescription<br />
+                        <strong>Price:</strong> @petStores[j].Price<br />
+                        <strong>Birth Day:</strong> @petStores[j].BirthDay<br />
+                    </td>
+                }
+                @for (int k = (i + 3) - petStores.Count; k > 0 && k < 3; k++)
+                {
+                    <td></td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
 

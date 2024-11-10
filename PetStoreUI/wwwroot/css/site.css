@@ -172,3 +172,15 @@ footer {
     height: 24px;
     color: blue;
 }
+
+.pet-image {
+    width: 150px; /* Set a fixed width */
+    height: 150px; /* Set a fixed height */
+    object-fit: cover; /* Ensure the image covers the area */
+}
+
+.pet-table td {
+    vertical-align: top;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
