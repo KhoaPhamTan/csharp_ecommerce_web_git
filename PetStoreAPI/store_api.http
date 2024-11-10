@@ -149,9 +149,24 @@ POST  http://localhost:5134/registration
 Content-Type: application/json
 
 {
-    "Username": "Khoa Pham" , 
+    "Username": "Khoa Pham Customer" , 
      "Password": "1234567890", 
-     "FullName": "Khoa Pham", 
+     "FullName": "Khoa Pham Customer", 
      "Email": "khoapham.1234567@gmail.com", 
-     "Address": "121, 3/2 Street, District 10, HCM City"
+     "Address": "121, 3/2 Street, District 10, HCM City",
+     "Role": "Customer"
+}
+
+
+### wrong Type
+PUT  http://localhost:5134/registration/1
+Content-Type: application/json
+
+{
+    "Username": "Khoa Pham Customer" , 
+     "Password": "1234567890", 
+     "FullName": "Khoa Pham Customer", 
+     "Email": "khoapham.1234567@gmail.com", 
+     "Address": "121, 3/2 Street, District 10, HCM City",
+     "Role": "Customer"
 }

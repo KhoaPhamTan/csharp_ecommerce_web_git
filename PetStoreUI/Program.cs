@@ -5,9 +5,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient(); // Đăng ký HttpClient
+builder.Services.AddHttpClient(); // Register HttpClient
 builder.Services.AddDbContext<PetStoreDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("PetStore"))); // Sử dụng chuỗi kết nối đã định nghĩa
+    options.UseSqlite(builder.Configuration.GetConnectionString("PetStore"))); // Use defined connection string
 
 var app = builder.Build();
 
@@ -27,6 +27,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{categoryName?}/{id?}");
 
 app.Run();

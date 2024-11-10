@@ -24,7 +24,7 @@ namespace PetStoreAPI.EndPoints
                 var petDtos = pets.Select(pet => new PetStoreDTO(
                     pet.Id,
                     pet.PetName,
-                    new CategoryDTO(pet.Category.Id, pet.Category.Name), // Use CategoryDTO
+                    pet.Category.Name, // Use Category name directly
                     pet.Gender,
                     pet.PetDescription,
                     pet.Price,
@@ -47,7 +47,7 @@ namespace PetStoreAPI.EndPoints
                 var petDto = new PetStoreDTO(
                     pet.Id,
                     pet.PetName,
-                    new CategoryDTO(pet.Category.Id, pet.Category.Name), // Use CategoryDTO
+                    pet.Category.Name, // Use Category name directly
                     pet.Gender,
                     pet.PetDescription,
                     pet.Price,

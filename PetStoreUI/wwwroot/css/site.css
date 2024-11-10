@@ -1,14 +1,14 @@
 /* Ensure html and body take up the full height */
 html, body {
-  height: 100%;
-  margin: 0;
+  height: 100%; /* Full height */
+  margin: 0; /* No margin */
 }
 
 /* Use flexbox for body to ensure it takes up the full height */
 body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  display: flex; /* Flexbox layout */
+  flex-direction: column; /* Column direction */
+  min-height: 100vh; /* Minimum height */
 }
 
 /* Styles for the Pet Store header title */
@@ -32,18 +32,18 @@ body {
 
 /* Styles for the header container */
 .header {
-  display: flex;
+  display: flex; /* Flexbox layout */
   justify-content: flex-start; /* Align items to the left */
-  align-items: center;
-  padding: 10px 20px;
+  align-items: center; /* Center align items */
+  padding: 10px 20px; /* Padding for spacing */
   background-color: #f1dae9; /* Light gray background color */
 }
 
 /* Styles for the navigation bar */
 .navbar {
-  display: flex;
+  display: flex; /* Flexbox layout */
   justify-content: space-between; /* Space between left and right sections */
-  align-items: center;
+  align-items: center; /* Center align items */
   background-color: #d3d3d3; /* Light gray background color */
   padding: 10px 20px; /* Padding for the navigation bar */
 }
@@ -58,22 +58,22 @@ body {
 
 /* Center the navigation items */
 .nav-center {
-  display: flex;
-  justify-content: center;
-  flex: 1;
+  display: flex; /* Flexbox layout */
+  justify-content: center; /* Center align items */
+  flex: 1; /* Take up remaining space */
 }
 
 /* Styles for the navigation list */
 .nav {
-  display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0;
+  display: flex; /* Flexbox layout */
+  list-style: none; /* Remove list style */
+  padding: 0; /* No padding */
+  margin: 0; /* No margin */
 }
 
 /* Styles for navigation items */
 .nav-item {
-  margin-right: 15px;
+  margin-right: 15px; /* Margin for spacing */
 }
 
 /* Styles for navigation links */
@@ -89,14 +89,14 @@ body {
 
 /* Styles for the left section of the navigation bar */
 .nav-left {
-  display: flex;
-  align-items: center;
+  display: flex; /* Flexbox layout */
+  align-items: center; /* Center align items */
   margin-right: auto; /* Push to the left */
 }
 
 /* Styles for links in the left section */
 .nav-left a {
-  margin-right: 15px;
+  margin-right: 15px; /* Margin for spacing */
   color: inherit; /* Inherit text color */
   text-decoration: none; /* Remove underline */
   font-size: 0.9em; /* Smaller font size */
@@ -109,18 +109,18 @@ body {
 
 /* Styles for the right section of the navigation bar */
 .nav-right {
-  display: flex;
-  align-items: center;
+  display: flex; /* Flexbox layout */
+  align-items: center; /* Center align items */
   margin-left: auto; /* Push to the right */
 }
 
 /* Styles for links in the right section */
 .nav-right a {
-  margin-right: 15px;
+  margin-right: 15px; /* Margin for spacing */
   color: inherit; /* Inherit text color */
   text-decoration: none; /* Remove underline */
   font-size: 0.9em; /* Smaller font size */
-  color: blue; 
+  color: blue; /* Blue text color */
   /* Add your custom styles for Register, Help, and Cart links here */
 }
 
@@ -131,7 +131,7 @@ body {
 
 /* Container styles */
 .container {
-  margin-top: 20px;
+  margin-top: 20px; /* Margin for spacing */
   flex: 1; /* Ensure the container takes up remaining space */
 }
 
@@ -154,4 +154,9 @@ footer {
 .table {
   width: 45%; /* Adjust table width */
   margin-top: 20px; /* Margin for spacing */
+}
+
+.cart-icon {
+    width: 24px;
+    height: 24px;
 }

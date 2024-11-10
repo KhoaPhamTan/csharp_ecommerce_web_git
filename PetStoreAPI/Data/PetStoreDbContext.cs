@@ -30,7 +30,7 @@ namespace PetStoreAPI.Data
                 new CategoryEntity { Id = 3, Name = "Fish" },
                 new CategoryEntity { Id = 4, Name = "Insect" },
                 new CategoryEntity { Id = 5, Name = "Bird" },
-                new CategoryEntity { Id = 6, Name = "Others" } 
+                new CategoryEntity { Id = 6, Name = "Others" }
             );
         }
     }
