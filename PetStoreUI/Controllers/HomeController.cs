@@ -24,8 +24,12 @@ namespace PetStoreUI.Controllers
                 categoryName = "Cat";
             }
 
+            // Set the selected category in ViewBag
+            ViewBag.SelectedCategory = categoryName;
+
             // Lấy danh sách cửa hàng thú cưng theo categoryName
             var petStores = _dbContext.PetStores
+                .Include(p => p.Category) // Ensure Category is included
                 .Where(p => p.Category.Name == categoryName)
                 .Select(p => new PetStoreDTO(p.Id, p.PetName, p.Category.Name, p.Gender, p.PetDescription, p.Price, DateOnly.FromDateTime(p.BirthDay), p.ImageUrl))
                 .ToList();

@@ -17,7 +17,7 @@
     @{
         var user = DbContext.Users.FirstOrDefault(u => u.Id == 1);
         var userName = user?.Username;
-        var categories = DbContext.Categories.ToList(); // Chưa thay đổi
+        var categories = DbContext.Categories.ToList(); 
     }
 
     <header class="header">
@@ -33,7 +33,7 @@
                 @foreach (var category in categories)
                 {
                     <li class="nav-item">
-                        <a class="nav-link" href="/Home/Index?categoryName=@category.Name">@category.Name</a>
+                        <a class="nav-link @(category.Name == ViewBag.SelectedCategory ? "active" : "")" href="/Home/Index?categoryName=@category.Name">@category.Name</a>
                     </li>
                 }
             </ul>

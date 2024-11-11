@@ -23,13 +23,6 @@ body {
   border-radius: 5px; /* Rounded corners */
 }
 
-/* Styles for the header subtitle */
-.header-subtitle {
-  font-size: 1em; /* Font size for the subtitle */
-  color: #555; /* Dark gray text color */
-  margin-top: 5px; /* Margin for spacing */
-}
-
 /* Styles for the header container */
 .header {
   display: flex; /* Flexbox layout */
@@ -87,6 +80,11 @@ body {
   font-weight: bold; /* Bold font weight */
 }
 
+/* Styles for active navigation links */
+.nav-link.active {
+  text-decoration: underline; /* Underline the active link */
+}
+
 /* Styles for the left section of the navigation bar */
 .nav-left {
   display: flex; /* Flexbox layout */
@@ -142,30 +140,6 @@ footer {
   margin-top: auto; /* Push footer to the bottom */
 }
 
-/* Styles for the tables container */
-.tables-container {
-  display: flex; /* Use flexbox for layout */
-  gap: 20px; /* Space between tables */
-  justify-content: space-between; /* Space between tables */
-}
-
-/* Styles for individual tables */
-.table {
-  width: 100%; /* Full width */
-  border-collapse: collapse; /* Collapse borders */
-  margin-top: 20px; /* Margin for spacing */
-}
-
-.table th, .table td {
-  border: 1px solid #ddd; /* Border for table cells */
-  padding: 8px; /* Padding for table cells */
-}
-
-.table th {
-  background-color: #f2f2f2; /* Light gray background color */
-  text-align: left; /* Align text to the left */
-}
-
 /* Styles for the cart icon */
 .cart-icon {
   width: 24px; /* Fixed width */
@@ -180,13 +154,6 @@ footer {
   object-fit: cover; /* Ensure the image covers the area */
 }
 
-/* Styles for the pet store list */
-.pet-store-list {
-  display: grid; /* Grid layout */
-  grid-template-columns: repeat(3, 1fr); /* Three columns */
-  gap: 20px; /* Gap between items */
-}
-
 /* Styles for the pet store item */
 .pet-store-item {
   border: 1px solid #ddd; /* Border for item */
@@ -197,3 +164,15 @@ footer {
   flex-direction: column; /* Column direction */
   align-items: center; /* Center align items */
 }
+
+/* Styles for the pet table */
+.pet-table {
+  width: 100%; /* Full width */
+}
+
+.pet-table td {
+  width: 33.33%; /* Fixed width for table cells */
+  height: 300px; /* Fixed height */
+  vertical-align: top; /* Align content to the top */
+}
+
