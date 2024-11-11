@@ -9,22 +9,30 @@ using Microsoft.Extensions.Configuration; // Thêm chỉ thị này
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure the connection string and register DbContext
-builder.Services.AddDbContext<PetStoreDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("PetStore"))); // Use "PetStore" instead of "DefaultConnection"
-
-// Register necessary services into the DI container
-builder.Services.AddScoped<IPetService, PetService>();  // Register PetService for IPetService
-
-// Register MVC services (Controllers and Views)
+// Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient(); // Register HttpClient
+builder.Services.AddDbContext<PetStoreDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("PetStore"))); // Use defined connection string
 
 var app = builder.Build();
 
-// Configure middleware
-app.UseStaticFiles(); // Ensure serving static files like js, css, images
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles(); // Ensure static files are served
+
+app.UseRouting();
+
+app.UseAuthorization();
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{categoryName?}/{id?}");
 
 app.Run();

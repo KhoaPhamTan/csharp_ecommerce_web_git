@@ -1,4 +1,4 @@
 namespace PetStoreLibrary.DTOs;
-public record PetTypeDTO(
+public record CategoryDTO(
     int Id,
     string Name);

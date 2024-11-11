@@ -36,8 +36,8 @@ app.UseCors("AllowAll");
 app.MapStoresEndPoints();
 app.MapCartEndpoints();
 app.MapRegistrationEndpoints();
-app.MapPetTypeEndpoints(); // Ánh xạ các endpoint cho PetType
 app.MapPetEndpoints();
+app.MapCategoryEndpoints(); // Ensure category endpoints are mapped
 
 // Chạy ứng dụng
 app.Run();

@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using PetStoreAPI.Data
+@using Microsoft.EntityFrameworkCore
+@using PetStoreAPI.Entities
+@inject PetStoreDbContext DbContext
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -6,38 +11,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Pet Store</title>
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/homeCategoryStyle.css" />
-    <link rel="stylesheet" href="~/css/homeFeatureStyle.css" />
 </head>
 
 <body>
-    <header>
+    @{
+        var user = DbContext.Users.FirstOrDefault(u => u.Id == 1);
+        var userName = user?.Username;
+        var categories = DbContext.Categories.ToList(); 
+    }
+
+    <header class="header">
         <div class="header-title">Pet Store</div>
-        <nav class="navbar">
-            <ul class="nav">
-                <li class="nav-item">
-                    <a class="nav-link @(ViewData["ActivePage"]?.ToString() == "Home" ? "active" : "")"
-                        href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(ViewData["ActivePage"]?.ToString() == "Privacy" ? "active" : "")"
-                        href="/Home/Privacy">Privacy</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link @(ViewData["ActivePage"]?.ToString() == "Help" ? "active" : "")"
-                        href="/Home/Help">Help</a>
-                </li>
-            </ul>
-            <div class="nav-right">
-                <a href="/Cart">
-                    <img src="~/images/cart-icon.png" alt="Cart" />
-                </a>
-            </div>
-        </nav>
     </header>
+
+    <nav class="navbar">
+        <div class="nav-left">
+            <div class="welcome-message">Welcome, <strong>@userName</strong>, to the store!</div>
+        </div>
+        <div class="nav-center">
+            <ul class="nav">
+                @foreach (var category in categories)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(category.Name == ViewBag.SelectedCategory ? "active" : "")" href="/Home/Index?categoryName=@category.Name">@category.Name</a>
+                    </li>
+                }
+            </ul>
+        </div>
+        <div class="nav-right">
+            <a href="/Account/Register">Register</a>
+            <a href="/Home/Help">Help</a>
+            <a href="/Cart">
+                <img src="@Url.Content("~/images/cart-icon.png")" alt="Cart" class="cart-icon" />
+            </a>
+        </div>
+    </nav>
+
     <main role="main" class="container">
         @RenderBody()
     </main>
+
     <footer>
         <p>&copy; 2024 - Pet Store</p>
     </footer>

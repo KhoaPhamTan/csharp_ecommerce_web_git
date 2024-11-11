@@ -1,10 +1,9 @@
 namespace PetStoreLibrary.DTOs;
 public record UpdatedPetStoreDTO(
-    int Id, 
-    string ItemId, 
-    string ProductId, 
-    int PetTypeId,  // Ensure this is included
+    string PetName, 
+    string CategoryName, // Use CategoryName instead of CategoryDTO
     string Gender, 
     string PetDescription, 
     decimal Price, 
-    DateOnly BirthDay);
+    DateOnly BirthDay,
+    string ImageUrl);

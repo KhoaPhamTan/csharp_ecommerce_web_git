@@ -1,30 +1,36 @@
-﻿@page
-@using PetStoreLibrary.DTOs
-@model IEnumerable<PetTypeDTO>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var petStores = ViewBag.PetStores as List<PetStoreLibrary.DTOs.PetStoreDTO>;
+}
 
-<div class="container">
-    <div class="category-menu">
-        <h2>Category Menu</h2>
-        <ul>
-            @if (Model != null && Model.Any())
+@if (petStores != null)
+{
+    <table class="table pet-table">
+        <tbody>
+            @for (int i = 0; i < petStores.Count; i += 3)
             {
-                @foreach (var petType in Model)
-                {
-                    <li onclick="loadFeatures('@petType.Name')">
-                        <i class="fa fa-paw"></i> @petType.Name
-                    </li>
-                }
+                <tr>
+                    @for (int j = i; j < i + 3; j++)
+                    {
+                        if (j < petStores.Count)
+                        {
+                            <td>
+                                <img src="@Url.Content("~/" + petStores[j].ImageUrl)" alt="Pet Image" class="pet-image"/><br />
+                                <strong>Pet Name:</strong> @petStores[j].PetName<br />
+                                <strong>Category:</strong> @petStores[j].CategoryName<br />
+                                <strong>Gender:</strong> @petStores[j].Gender<br />
+                                <strong>Description:</strong> @petStores[j].PetDescription<br />
+                                <strong>Price:</strong> @petStores[j].Price<br />
+                                <strong>Birth Day:</strong> @petStores[j].BirthDay.ToShortDateString()<br />
+                            </td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                    }
+                </tr>
             }
-        </ul>
-    </div>
-
-    <div class="featured-product">
-        <h2>Featured Product</h2>
-        <div id="product-list" class="product-list">
-            <!-- Các sản phẩm sẽ được tải qua JavaScript -->
-        </div>
-    </div>
-</div>
-
-<!-- Tham chiếu tới file JavaScript app.js -->
-<script src="~/js/app.js"></script>
+        </tbody>
+    </table>
+}

@@ -11,25 +11,26 @@ namespace PetStoreAPI.Data
         public DbSet<PetStoreEntity> PetStores { get; set; }
         public DbSet<CartItemEntity> CartItems { get; set; }
         public DbSet<UserEntity> Users { get; set; }
-        public DbSet<PetTypeEntity> PetTypes { get; set; } // DbSet for PetTypeEntity
+        public DbSet<CategoryEntity> Categories { get; set; } // Add DbSet for CategoryEntity
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Apply the PetStoreMapping configuration
             modelBuilder.ApplyConfiguration(new PetStoreMapping());
 
-            // Set precision and scale for PetTypeEntity and other configurations as needed
+            // Set precision and scale for PetType and other configurations as needed
             modelBuilder.Entity<PetStoreEntity>()
                 .Property(p => p.Price)
                 .HasColumnType("decimal(18,2)");
 
-            // Seed default PetType records
-            modelBuilder.Entity<PetTypeEntity>().HasData(
-                new PetTypeEntity { Id = 1, Name = "Cat" },
-                new PetTypeEntity { Id = 2, Name = "Dog" },
-                new PetTypeEntity { Id = 3, Name = "Fish" },
-                new PetTypeEntity { Id = 4, Name = "Insect" },
-                new PetTypeEntity { Id = 5, Name = "Others" }
+            // Seed default Category records
+            modelBuilder.Entity<CategoryEntity>().HasData(
+                new CategoryEntity { Id = 1, Name = "Cat" },
+                new CategoryEntity { Id = 2, Name = "Dog" },
+                new CategoryEntity { Id = 3, Name = "Fish" },
+                new CategoryEntity { Id = 4, Name = "Insect" },
+                new CategoryEntity { Id = 5, Name = "Bird" },
+                new CategoryEntity { Id = 6, Name = "Others" }
             );
         }
     }

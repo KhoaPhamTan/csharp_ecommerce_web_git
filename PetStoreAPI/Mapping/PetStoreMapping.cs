@@ -13,14 +13,9 @@ namespace PetStoreAPI.Mappings
             // Khóa chính
             builder.HasKey(p => p.Id);
 
-            // Các thuộc tính ItemId, ProductId, Gender, PetDescription, Price, và BirthDay
-            builder.Property(p => p.ItemId)
-                .IsRequired() // Bắt buộc
-                .HasMaxLength(50); // Độ dài tối đa
-
-            builder.Property(p => p.ProductId)
-                .IsRequired() 
-                .HasMaxLength(50); 
+            builder.Property(p => p.PetName)
+                .IsRequired()
+                .HasMaxLength(50);
 
             builder.Property(p => p.Gender)
                 .IsRequired()
@@ -36,11 +31,14 @@ namespace PetStoreAPI.Mappings
             builder.Property(p => p.BirthDay)
                 .IsRequired(); // Ngày sinh là bắt buộc, có thể dùng DateTime hoặc DateOnly tùy thuộc vào yêu cầu
 
-            // Cấu hình quan hệ giữa PetStoreEntity và PetTypeEntity
-            builder.HasOne(p => p.PetType) // Mỗi PetStore có một PetType
-                .WithMany() // Mỗi PetType có thể có nhiều PetStore
-                .HasForeignKey(p => p.PetTypeId) // PetTypeId là khóa ngoại
-                .OnDelete(DeleteBehavior.Restrict); // Nếu muốn giữ các PetStore mặc dù PetType bị xóa
+            builder.Property(p => p.ImageUrl)
+                .IsRequired()
+                .HasMaxLength(200);
+
+            // Configure the relationship with CategoryEntity
+            builder.HasOne(p => p.Category)
+                   .WithMany()
+                   .HasForeignKey("CategoryId");
         }
     }
 }
