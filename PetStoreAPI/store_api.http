@@ -124,16 +124,16 @@ Content-Type: application/json
 PUT  http://localhost:5134/petStores/5
 Content-Type: application/json
 
-{
-    "PetName": "Fancy Guppies",
-    "CategoryName": "Cat",
+  {
+    "petName": "Fancy Guppies",
+    "categoryName": "Fish",
     "gender": "Female",
     "petDescription": "Red",
     "price": 9.01,
     "birthDay": "2023-11-09",
-    "ImageUrl": "images/Fish/Fancy Guppies.jpg"
-}
-
+    "imageUrl": "images/Fish/Fancy Guppies.jpg"
+  }
+  
 ###
 DELETE   http://localhost:5134/petStores/1
 

@@ -17,11 +17,13 @@
     @{
         var user = DbContext.Users.FirstOrDefault(u => u.Id == 1);
         var userName = user?.Username;
-        var categories = DbContext.Categories.ToList();
+        var categories = DbContext.Categories.ToList(); // Chưa thay đổi
     }
+
     <header class="header">
         <div class="header-title">Pet Store</div>
     </header>
+
     <nav class="navbar">
         <div class="nav-left">
             <div class="welcome-message">Welcome, <strong>@userName</strong>, to the store!</div>
@@ -40,13 +42,15 @@
             <a href="/Account/Register">Register</a>
             <a href="/Home/Help">Help</a>
             <a href="/Cart">
-                <img src="~/images/cart-icon.png" alt="Cart" class="cart-icon" />
+                <img src="@Url.Content("~/images/cart-icon.png")" alt="Cart" class="cart-icon" />
             </a>
         </div>
     </nav>
+
     <main role="main" class="container">
         @RenderBody()
     </main>
+
     <footer>
         <p>&copy; 2024 - Pet Store</p>
     </footer>

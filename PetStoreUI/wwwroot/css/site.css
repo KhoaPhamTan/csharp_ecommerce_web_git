@@ -121,7 +121,6 @@ body {
   text-decoration: none; /* Remove underline */
   font-size: 0.9em; /* Smaller font size */
   color: blue; /* Blue text color */
-  /* Add your custom styles for Register, Help, and Cart links here */
 }
 
 /* Styles for images in the right section */
@@ -152,35 +151,49 @@ footer {
 
 /* Styles for individual tables */
 .table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+  width: 100%; /* Full width */
+  border-collapse: collapse; /* Collapse borders */
+  margin-top: 20px; /* Margin for spacing */
 }
 
 .table th, .table td {
-  border: 1px solid #ddd;
-  padding: 8px;
+  border: 1px solid #ddd; /* Border for table cells */
+  padding: 8px; /* Padding for table cells */
 }
 
 .table th {
-  background-color: #f2f2f2;
-  text-align: left;
+  background-color: #f2f2f2; /* Light gray background color */
+  text-align: left; /* Align text to the left */
 }
 
+/* Styles for the cart icon */
 .cart-icon {
-    width: 24px;
-    height: 24px;
-    color: blue;
+  width: 24px; /* Fixed width */
+  height: 24px; /* Fixed height */
+  color: blue; /* Blue color */
 }
 
+/* Styles for the pet image */
 .pet-image {
-    width: 150px; /* Set a fixed width */
-    height: 150px; /* Set a fixed height */
-    object-fit: cover; /* Ensure the image covers the area */
+  width: 150px; /* Set a fixed width */
+  height: 150px; /* Set a fixed height */
+  object-fit: cover; /* Ensure the image covers the area */
 }
 
-.pet-table td {
-    vertical-align: top;
-    padding: 10px;
-    border: 1px solid #ddd;
+/* Styles for the pet store list */
+.pet-store-list {
+  display: grid; /* Grid layout */
+  grid-template-columns: repeat(3, 1fr); /* Three columns */
+  gap: 20px; /* Gap between items */
+}
+
+/* Styles for the pet store item */
+.pet-store-item {
+  border: 1px solid #ddd; /* Border for item */
+  padding: 10px; /* Padding for item */
+  border-radius: 5px; /* Rounded corners */
+  box-sizing: border-box; /* Box sizing */
+  display: flex; /* Flexbox layout */
+  flex-direction: column; /* Column direction */
+  align-items: center; /* Center align items */
 }
