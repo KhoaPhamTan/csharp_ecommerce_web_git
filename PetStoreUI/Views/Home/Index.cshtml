@@ -22,6 +22,8 @@
                                 <strong>Description:</strong> @petStores[j].PetDescription<br />
                                 <strong>Price:</strong> @petStores[j].Price<br />
                                 <strong>Birth Day:</strong> @petStores[j].BirthDay.ToShortDateString()<br />
+                                <input type="number" id="quantity-@petStores[j].Id" name="quantity" min="1" value="1" class="quantity-input" />
+                                <button class="btn btn-primary" onclick="addToCart(@petStores[j].Id)">Add to Cart</button>
                             </td>
                         }
                         else
@@ -34,3 +36,11 @@
         </tbody>
     </table>
 }
+
+<script>
+    function addToCart(petId) {
+        var quantity = document.getElementById('quantity-' + petId).value;
+        // Implement the logic to add the pet to the cart with the specified quantity
+        alert('Pet with ID ' + petId + ' and quantity ' + quantity + ' added to cart.');
+    }
+</script>

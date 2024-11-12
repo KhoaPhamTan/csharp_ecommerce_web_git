@@ -4,6 +4,6 @@ public class HelpController : Controller
 {
     public IActionResult Index()
     {
-        return View();
+        return View("Help");
     }
 }
