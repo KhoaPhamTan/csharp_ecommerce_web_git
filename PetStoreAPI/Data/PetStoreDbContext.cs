@@ -8,13 +8,19 @@ namespace PetStoreAPI.Data
     {
         public PetStoreDbContext(DbContextOptions<PetStoreDbContext> options) : base(options) { }
 
-        public DbSet<PetStoreEntity> PetStores { get; set; }
-        public DbSet<CartItemEntity> CartItems { get; set; }
-        public DbSet<UserEntity> Users { get; set; }
-        public DbSet<CategoryEntity> Categories { get; set; } // Add DbSet for CategoryEntity
+        public DbSet<PetStoreEntity>? PetStores { get; set; }
+        public DbSet<CartItemEntity>? CartItems { get; set; }
+        public DbSet<UserEntity>? Users { get; set; }
+        public DbSet<CategoryEntity>? Categories { get; set; }
+      
+  
+     
+    
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             // Apply the PetStoreMapping configuration
             modelBuilder.ApplyConfiguration(new PetStoreMapping());
 
@@ -32,6 +38,20 @@ namespace PetStoreAPI.Data
                 new CategoryEntity { Id = 5, Name = "Bird" },
                 new CategoryEntity { Id = 6, Name = "Others" }
             );
+
+            // Configure entity properties and relationships
+            modelBuilder.Entity<UserEntity>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Username).IsRequired();
+                entity.Property(e => e.Password).IsRequired();
+                entity.Property(e => e.FullName).IsRequired();
+                entity.Property(e => e.Email).IsRequired();
+                entity.Property(e => e.Address).IsRequired();
+                entity.Property(e => e.Role).IsRequired();
+            });
+
+            // Configure other entities...
         }
     }
 }

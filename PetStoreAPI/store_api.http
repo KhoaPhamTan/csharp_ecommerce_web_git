@@ -149,10 +149,10 @@ POST  http://localhost:5134/registration
 Content-Type: application/json
 
 {
-    "Username": "Khoa Pham Customer" , 
+    "Username": "Khoa Pham Customer 2" , 
      "Password": "1234567890", 
-     "FullName": "Khoa Pham Customer", 
-     "Email": "khoapham.1234567@gmail.com", 
+     "FullName": "Khoa Pham Customer 2", 
+     "Email": "khoapham.3@gmail.com", 
      "Address": "121, 3/2 Street, District 10, HCM City",
      "Role": "Customer"
 }
@@ -169,4 +169,14 @@ Content-Type: application/json
      "Email": "khoapham.1234567@gmail.com", 
      "Address": "121, 3/2 Street, District 10, HCM City",
      "Role": "Customer"
+}
+
+
+#####
+post http://localhost:5135/users/login
+Content-Type: application/json
+
+{
+     "Email": "khoapham.1234567@gmail.com", 
+       "Password": "1234567890", 
 }

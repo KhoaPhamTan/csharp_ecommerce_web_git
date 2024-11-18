@@ -17,5 +17,4 @@ namespace PetStoreAPI.Entities
         public required string Address { get; set; } // Mark as required
         public UserRole Role { get; set; } = UserRole.Customer;  // Mặc định là Customer
     }
-
 }

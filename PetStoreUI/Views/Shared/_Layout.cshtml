@@ -11,13 +11,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Pet Store</title>
     <link rel="stylesheet" href="~/css/site.css" />
+    
 </head>
 
 <body>
+    @* Fetch categories from the database *@
     @{
-        var user = DbContext.Users.FirstOrDefault(u => u.Id == 1);
-        var userName = user?.Username;
-        var categories = DbContext.Categories.ToList(); 
+        var categories = DbContext.Categories?.ToList() ?? new List<CategoryEntity>(); 
+        var userName = User.Identity?.Name;
     }
 
     <header class="header">
@@ -26,23 +27,42 @@
 
     <nav class="navbar">
         <div class="nav-left">
-            <div class="welcome-message">Welcome, <strong>@userName</strong>, to the store!</div>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <div class="welcome-message">Welcome, <strong>@userName</strong>, to the store!</div>
+            }
+            else
+            {
+                <div class="welcome-message">Welcome to the store!</div>
+            }
         </div>
         <div class="nav-center">
             <ul class="nav">
                 @foreach (var category in categories)
                 {
                     <li class="nav-item">
-                        <a class="nav-link @(category.Name == ViewBag.SelectedCategory ? "active" : "")" href="/Home/Index?categoryName=@category.Name">@category.Name</a>
+                        <a class="nav-link @(category.Name == ViewBag.SelectedCategory ? "active" : "")" href="/?categoryName=@category.Name">@category.Name</a>
                     </li>
                 }
             </ul>
         </div>
         <div class="nav-right">
-            <a href="/Account/Register">Register</a>
-            <a href="/Help">Help</a>
-            <a href="/Cart">
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <a href="javascript:document.getElementById('logout-form').submit();" class="nav-link">Logout</a>
+                <form id="logout-form" method="post" action="/users/logout" style="display:none;">
+                    @Html.AntiForgeryToken()
+                </form>
+            }
+            else
+            {
+                <a asp-page="/Account/Login" class="nav-link">Login</a>
+                <a asp-page="/Account/Register" class="nav-link">Register</a>
+            }
+            <a asp-page="/Help" class="nav-link">Help</a>
+            <a asp-page="/Cart" class="nav-link cart-container">
                 <img src="@Url.Content("~/images/cart-icon.png")" alt="Cart" class="cart-icon" />
+                <span id="cart-count" class="cart-count">0</span>
             </a>
         </div>
     </nav>
@@ -54,6 +74,17 @@
     <footer>
         <p>&copy; 2024 - Pet Store</p>
     </footer>
+    <script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    var cartElement = document.getElementById('cart-count');
+    if (cartElement) {
+        var cartCount = 0; // Replace with actual logic to get cart count
+        cartElement.textContent = cartCount;
+    }
+});
+
+    </script>
 </body>
 
 </html>

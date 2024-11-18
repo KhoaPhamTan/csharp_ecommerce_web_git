@@ -1,0 +1,60 @@
+@page
+@model PetStoreUI.Pages.IndexModel
+@{
+    var petStores = Model.PetStores;
+    var categories = Model.Categories;
+    ViewData["Title"] = "Home";
+    Layout = "_Layout";
+    ViewBag.SelectedCategory = Model.SelectedCategory;
+}
+
+<main role="main" class="container">
+    @if (petStores != null)
+    {
+        <table class="table pet-table">
+            <tbody>
+                @for (int i = 0; i < petStores.Count; i += 3)
+                {
+                    <tr>
+                        @for (int j = i; j < i + 3; j++)
+                        {
+                            if (j < petStores.Count)
+                            {
+                                <td>
+                                    <img src="@Url.Content("~/" + petStores[j].ImageUrl)" alt="Pet Image" class="pet-image"/><br />
+                                    <strong>Pet Name:</strong> @petStores[j].PetName<br />
+                                    <strong>Category:</strong> @petStores[j].CategoryName<br />
+                                    <strong>Gender:</strong> @petStores[j].Gender<br />
+                                    <strong>Description:</strong> @petStores[j].PetDescription<br />
+                                    <strong>Price:</strong> @petStores[j].Price<br />
+                                    <strong>Birth Day:</strong> @petStores[j].BirthDay.ToShortDateString()<br />
+                                    <input type="number" id="quantity-@petStores[j].Id" name="quantity" min="1" value="1" class="quantity-input" />
+                                    <button class="btn btn-primary" onclick="addToCart(@petStores[j].Id)">Add to Cart</button>
+                                </td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var cartElement = document.getElementById('cart-count');
+    if (cartElement) {
+        var cartCount = 0; // Replace with actual logic to get cart count
+        cartElement.textContent = cartCount;
+    }
+});
+
+    function addToCart(petId) {
+        var quantity = document.getElementById('quantity-' + petId).value;
+        alert('Pet with ID ' + petId + ' and quantity ' + quantity + ' added to cart.');
+    }
+</script>
