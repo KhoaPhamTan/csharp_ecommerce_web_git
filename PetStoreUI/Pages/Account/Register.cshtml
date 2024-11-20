@@ -1,0 +1,55 @@
+@page
+@model PetStoreUI.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<!-- Ensure the CSS file is linked -->
+<link rel="stylesheet" href="~/css/site.css" />
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h1>Register</h1>
+        </div>
+        <div class="login-body">
+            @if (Model.ErrorMessage != null)
+            {
+                <div class="alert alert-danger">@Model.ErrorMessage</div>
+            }
+            <form method="post" class="login-form">
+                @Html.AntiForgeryToken()
+                <div class="form-group d-flex align-items-center">
+                    <label asp-for="User.Username" class="form-label me-2">Username:</label>
+                    <input asp-for="User.Username" class="form-control" name="User.Username" />
+                    <span asp-validation-for="User.Username" class="text-danger"></span>
+                </div>
+                <div class="form-group d-flex align-items-center">
+                    <label asp-for="User.Password" class="form-label me-2">Password:</label>
+                    <input asp-for="User.Password" type="password" class="form-control" name="User.Password" />
+                    <span asp-validation-for="User.Password" class="text-danger"></span>
+                </div>
+                <div class="form-group d-flex align-items-center">
+                    <label asp-for="User.FullName" class="form-label me-2">Full Name:</label>
+                    <input asp-for="User.FullName" class="form-control" name="User.FullName" />
+                    <span asp-validation-for="User.FullName" class="text-danger"></span>
+                </div>
+                <div class="form-group d-flex align-items-center">
+                    <label asp-for="User.Email" class="form-label me-2">Email:</label>
+                    <input asp-for="User.Email" class="form-control" name="User.Email" />
+                    <span asp-validation-for="User.Email" class="text-danger"></span>
+                </div>
+                <div class="form-group d-flex align-items-center">
+                    <label asp-for="User.Address" class="form-label me-2">Address:</label>
+                    <input asp-for="User.Address" class="form-control" name="User.Address" />
+                    <span asp-validation-for="User.Address" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -4,8 +4,8 @@ namespace PetStoreAPI.Entities
     {
         Customer,   // Mặc định
         Admin,      // Quản trị viên
-        Employee    // Nhân viên
-    }
+        Employee,    // Nhân viên
+      }
 
     public class UserEntity
     {

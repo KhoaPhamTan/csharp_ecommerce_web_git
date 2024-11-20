@@ -219,6 +219,7 @@ footer {
 .login-form .btn {
   display: block; /* Block display */
   margin: 0 auto; /* Center the button */
+  font-size: bold; /* Bold font weight */
   background-color: blue; /* White background */
   color: white; /* White text color */
 }

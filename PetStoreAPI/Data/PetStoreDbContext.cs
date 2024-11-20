@@ -12,10 +12,7 @@ namespace PetStoreAPI.Data
         public DbSet<CartItemEntity>? CartItems { get; set; }
         public DbSet<UserEntity>? Users { get; set; }
         public DbSet<CategoryEntity>? Categories { get; set; }
-      
-  
-     
-    
+        // ...existing code...
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
