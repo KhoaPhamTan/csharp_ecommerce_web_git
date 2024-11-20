@@ -11,3 +11,5 @@ start register
 ---------------
 20/11/2024
 done register
+page details
+click to add to cart =>increase nunber ở add to cart icon

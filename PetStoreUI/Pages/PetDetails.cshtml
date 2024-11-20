@@ -1,0 +1,78 @@
+@page "{id:int}"
+@model PetStoreUI.Pages.PetDetailsModel
+@{
+    ViewData["Title"] = "Pet Details";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/petdetails.css" />
+    <link rel="stylesheet" href="~/css/toastmessage.css" />
+}
+
+<h1>Pet Details</h1>
+
+<a href="/Index" class="btn btn-secondary">Back to Home</a>
+
+@if (Model.Pet != null)
+{
+    <div class="pet-details-container">
+        <div class="pet-details-card">
+            <img src="@Url.Content("~/" + Model.Pet.ImageUrl)" alt="Pet Image" class="pet-image"/>
+            <h3>@Model.Pet.PetName</h3>
+            <div class="pet-details-info">
+                <p><strong>Category:</strong> @Model.Pet.Category.Name</p>
+                <p><strong>Gender:</strong> @Model.Pet.Gender</p>
+                <p><strong>Description:</strong> @Model.Pet.PetDescription</p>
+                <p><strong>Price:</strong> $ @Model.Pet.Price</p>
+                <p><strong>Birth Day:</strong> @Model.Pet.BirthDay.ToShortDateString()</p>
+                <div class="pet-details-cart-controls">
+                    <input type="number" id="quantity-@Model.Pet.Id" name="quantity" min="1" value="1" class="quantity-input" />
+                    <button class="btn btn-primary" onclick="addToCart(@Model.Pet.Id)">Add to Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>Pet details not found.</p>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var cartElement = document.getElementById('cart-count');
+            if (cartElement) {
+                var cartCount = localStorage.getItem('cartCount') || 0;
+                cartElement.textContent = cartCount;
+            }
+        });
+
+        function addToCart(petId) {
+            var quantity = document.getElementById('quantity-' + petId).value;
+            var cartElement = document.getElementById('cart-count');
+            if (cartElement) {
+                var cartCount = parseInt(cartElement.textContent) || 0;
+                cartCount += parseInt(quantity);
+                cartElement.textContent = cartCount;
+                localStorage.setItem('cartCount', cartCount);
+            }
+            showToast('Pet was added to cart.');
+        }
+
+        function showToast(message) {
+            var toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(function() {
+                toast.classList.add('show');
+            }, 100);
+            setTimeout(function() {
+                toast.classList.remove('show');
+                document.body.removeChild(toast);
+            }, 3000);
+        }
+    </script>
+}

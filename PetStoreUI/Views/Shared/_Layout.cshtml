@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Pet Store</title>
     <link rel="stylesheet" href="~/css/site.css" />
-  
+    @RenderSection("Styles", required: false)
 </head>
 
 <body>
@@ -75,16 +75,15 @@
         <p>&copy; 2024 - Pet Store</p>
     </footer>
     <script>
-
-document.addEventListener('DOMContentLoaded', function() {
-    var cartElement = document.getElementById('cart-count');
-    if (cartElement) {
-        var cartCount = 0; // Replace with actual logic to get cart count
-        cartElement.textContent = cartCount;
-    }
-});
-
+        document.addEventListener('DOMContentLoaded', function() {
+            var cartElement = document.getElementById('cart-count');
+            if (cartElement) {
+                var cartCount = localStorage.getItem('cartCount') || 0;
+                cartElement.textContent = cartCount;
+            }
+        });
     </script>
+    @RenderSection("Scripts", required: false)
 </body>
 
 </html>

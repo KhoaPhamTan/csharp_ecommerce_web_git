@@ -150,8 +150,8 @@ footer {
 
 /* Styles for the pet image */
 .pet-image {
-  width: 150px; /* Set a fixed width */
-  height: 150px; /* Set a fixed height */
+  width: 250px; /* Set a fixed width */
+  height: 250px; /* Set a fixed height */
   object-fit: cover; /* Ensure the image covers the area */
 }
 
@@ -223,6 +223,26 @@ footer {
   background-color: blue; /* White background */
   color: white; /* White text color */
 }
+
+.pet-name-link {
+  color: #007bff !important;
+  text-decoration: none !important;
+}
+
+.pet-name-link:hover {
+  text-decoration: underline !important;
+}
+
+.table.pet-table .pet-name-link {
+  color: #007bff !important;
+  text-decoration: none !important;
+  pointer-events: auto !important; /* Ensure pointer events are enabled */
+}
+
+.table.pet-table .pet-name-link:hover {
+  text-decoration: underline !important;
+}
+
 
 
 
