@@ -48,6 +48,19 @@ namespace PetStoreAPI.Data
                 entity.Property(e => e.Role).IsRequired();
             });
 
+            // Configure CartItemEntity
+            modelBuilder.Entity<CartItemEntity>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.UserId).IsRequired();
+                entity.Property(e => e.PetId).IsRequired();
+                entity.Property(e => e.Quantity).IsRequired();
+                entity.Property(e => e.DateAdded).IsRequired();
+                entity.HasOne(e => e.Pet)
+                      .WithMany()
+                      .HasForeignKey(e => e.PetId);
+            });
+
             // Configure other entities...
         }
     }
