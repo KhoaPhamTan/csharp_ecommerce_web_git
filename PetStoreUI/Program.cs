@@ -22,9 +22,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/Account/Logout";             // Đường dẫn trang đăng xuất
         options.AccessDeniedPath = "/Account/AccessDenied"; // Đường dẫn trang từ chối quyền truy cập
 
-        // Đảm bảo rằng cookie được gửi khi yêu cầu từ cross-origin
-        options.Cookie.SameSite = SameSiteMode.None;  // Cấu hình cookie cho cross-origin
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;  // Chỉ sử dụng cookie khi có HTTPS
+        // Ensure cookies are sent with cross-origin requests
+        options.Cookie.SameSite = SameSiteMode.None;  // Configure cookie for cross-origin
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;  // Use cookie only with HTTPS
     });
 
 builder.Services.AddAuthorization(); // Add authorization services
@@ -35,10 +35,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll",
         builder =>
         {
-            builder.WithOrigins("http://localhost:5135")  // Cấu hình cho phép UI tại localhost:5135
+            builder.WithOrigins("http://localhost:5134")  // Ensure this matches the API origin
                    .AllowAnyMethod()
                    .AllowAnyHeader()
-                   .AllowCredentials();  // Cho phép gửi cookie trong cross-origin requests
+                   .AllowCredentials(); // Allow sending cookies
         });
 });
 
@@ -65,12 +65,12 @@ app.UseStaticFiles(); // Đảm bảo phục vụ file tĩnh
 
 app.UseRouting();
 
+// Use CORS policy
+app.UseCors("AllowAll"); // Ensure CORS is used before authentication and authorization
+
 // Use authentication and authorization
 app.UseAuthentication();
-app.UseAuthorization(); // Đảm bảo middleware authorization được sử dụng
-
-// Use CORS policy
-app.UseCors("AllowAll");
+app.UseAuthorization(); // Ensure authorization middleware is used
 
 // Map Razor Pages (để xử lý trang Razor Pages)
 app.MapRazorPages();

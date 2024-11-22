@@ -52,7 +52,9 @@ public static class UserEndpoints
             // Tạo danh sách Claims cho người dùng
             var userClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Email),  // Cải tiến: Dùng Email thay vì Username
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),  // Lưu UserId
+                new Claim(ClaimTypes.Name, user.Username ?? string.Empty),  // Lưu Username
+                new Claim(ClaimTypes.Email, user.Email),  // Lưu Email
                 new Claim(ClaimTypes.Role, user.Role.ToString())  // Cung cấp quyền cho user (Customer, Admin)
             };
 

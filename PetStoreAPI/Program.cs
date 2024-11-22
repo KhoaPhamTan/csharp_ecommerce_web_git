@@ -27,10 +27,10 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll",
         builder =>
         {
-            builder.WithOrigins("http://localhost:5135")  // Đảm bảo cho phép yêu cầu từ UI (localhost:5135)
-                   .AllowAnyMethod()  // Cho phép tất cả các phương thức (GET, POST, PUT, DELETE, etc.)
-                   .AllowAnyHeader()  // Cho phép tất cả các header
-                   .AllowCredentials(); // Cho phép gửi cookie nếu cần
+            builder.WithOrigins("http://localhost:5135")  // Ensure this matches the UI origin
+                   .AllowAnyMethod()
+                   .AllowAnyHeader()
+                   .AllowCredentials(); // Allow sending cookies
         });
 });
 
@@ -40,11 +40,11 @@ var app = builder.Build();
 await app.MigrateDbAsync(); // Custom method to migrate the database
 
 // Use CORS before authentication and authorization middlewares
-app.UseCors("AllowAll"); // Đảm bảo đặt CORS trước middleware Authentication và Authorization
+app.UseCors("AllowAll"); // Ensure CORS is used before authentication and authorization
 
 // Use authentication and authorization
 app.UseAuthentication();
-app.UseAuthorization(); // Đảm bảo authorization middleware được sử dụng
+app.UseAuthorization(); // Ensure authorization middleware is used
 
 // Map endpoints
 app.MapStoresEndPoints();
