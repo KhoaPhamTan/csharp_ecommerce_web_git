@@ -5,21 +5,49 @@
     ViewData["Title"] = "Cart";
 }
 
-<h2>Shopping Cart</h2>
-<p>This is your shopping cart.</p>
+<!-- Ensure the CSS file is linked -->
+<link rel="stylesheet" href="~/css/cart.css" />
 
-@if (Model.CartItems.Any())
-{
-    <ul>
-        @foreach (var item in Model.CartItems)
-        {
-            <li>
-                Pet ID: @item.PetId, Quantity: @item.Quantity
-            </li>
-        }
-    </ul>
-}
-else
-{
-    <p>Your cart is empty.</p>
-}
+<div class="cart-container">
+    <div class="cart-card">
+        <div class="cart-header">
+            <h2>Shopping Cart</h2>
+            <p>This is your shopping cart.</p>
+        </div>
+        <div class="cart-body">
+            @if (Model.CartItems.Any())
+            {
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Pet Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <tr>
+                                <td>@item.PetName</td>
+                                <td>
+                                    <button class="btn btn-secondary">-</button>
+                                    @item.Quantity
+                                    <button class="btn btn-secondary">+</button>
+                                </td>
+                                <td>@item.Price</td>
+                                <td>@(item.Price * item.Quantity)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <button class="btn btn-primary">Proceed to Checkout</button>
+            }
+            else
+            {
+                <p>Your cart is empty.</p>
+            }
+        </div>
+    </div>
+</div>

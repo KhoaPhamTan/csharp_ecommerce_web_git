@@ -2,4 +2,7 @@ namespace PetStoreLibrary.DTOs;
 
 public record CartItemDTO(
     int PetId, 
-    int Quantity);
+    int Quantity,
+    decimal Price, // Add Price property
+    string PetName // Add PetName property
+);

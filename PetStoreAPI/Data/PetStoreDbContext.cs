@@ -40,6 +40,7 @@ namespace PetStoreAPI.Data
             modelBuilder.Entity<UserEntity>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).IsRequired().HasMaxLength(36); // Ensure Id is required and has a max length
                 entity.Property(e => e.Username).IsRequired();
                 entity.Property(e => e.Password).IsRequired();
                 entity.Property(e => e.FullName).IsRequired();
@@ -56,9 +57,18 @@ namespace PetStoreAPI.Data
                 entity.Property(e => e.PetId).IsRequired();
                 entity.Property(e => e.Quantity).IsRequired();
                 entity.Property(e => e.DateAdded).IsRequired();
-                entity.HasOne(e => e.Pet)
+
+                // Configure relationship with UserEntity
+                entity.HasOne<UserEntity>()
                       .WithMany()
-                      .HasForeignKey(e => e.PetId);
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Cascade); // Thêm hành vi xóa cascade nếu cần thiết
+
+                // Configure relationship with PetStoreEntity
+                entity.HasOne(e => e.Pet)
+                      .WithMany()  // Nếu Pet có thể có nhiều CartItem
+                      .HasForeignKey(e => e.PetId)
+                      .OnDelete(DeleteBehavior.Cascade); // Thêm hành vi xóa cascade nếu cần thiết
             });
 
             // Configure other entities...

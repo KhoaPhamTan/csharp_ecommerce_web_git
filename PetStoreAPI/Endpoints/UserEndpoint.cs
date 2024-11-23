@@ -5,94 +5,49 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using System.Text;
+using Microsoft.AspNetCore.Mvc;
+using PetStoreAPI.Entities;
 
 namespace PetStoreAPI.Endpoints;
 
-public static class UserEndpoints
+public static class UserEndpoint
 {
     public static RouteGroupBuilder MapUserEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/users");
+        var group = app.MapGroup("/Users");
 
-        // POST method for login
-        group.MapPost("/login", async (LoginDTO loginDto, HttpContext httpContext, PetStoreDbContext dbContext, ILogger<Program> logger) =>
+        // Đăng nhập
+        group.MapPost("/login", async ([FromBody] LoginDTO loginDTO, PetStoreDbContext db, HttpContext httpContext) =>
         {
-            logger.LogInformation("Login attempt for email: {Email}", loginDto.Email);
-
-            // Kiểm tra dữ liệu gửi lên có hợp lệ không
-            if (string.IsNullOrEmpty(loginDto.Email) || string.IsNullOrEmpty(loginDto.Password))
-            {
-                logger.LogWarning("Email or password is missing.");
-                return Results.BadRequest("Email or password is missing.");
-            }
-
-            // Kiểm tra tài khoản trong database
-            var user = dbContext.Users != null ? await dbContext.Users.FirstOrDefaultAsync(u => u.Email == loginDto.Email) : null;
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == loginDTO.Email && u.Password == loginDTO.Password);
             if (user == null)
             {
-                logger.LogWarning("Invalid login attempt for email: {Email}", loginDto.Email);
-                return Results.BadRequest("Invalid login attempt");
+                return Results.Unauthorized();
             }
 
-            // Xác minh mật khẩu (so sánh với mật khẩu mã hóa trong cơ sở dữ liệu)
-            using var sha256 = SHA256.Create();
-            var passwordHash = Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password)));
-
-            // So sánh mật khẩu đã mã hóa (hash) với mật khẩu trong cơ sở dữ liệu
-            if (user.Password != passwordHash)
+            var claims = new List<Claim>
             {
-                logger.LogWarning("Invalid login attempt for email: {Email}", loginDto.Email);
-                return Results.BadRequest("Invalid login attempt");
-            }
-
-            logger.LogInformation("User logged in successfully: {Email}", loginDto.Email);
-
-            // Tạo danh sách Claims cho người dùng
-            var userClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),  // Lưu UserId
-                new Claim(ClaimTypes.Name, user.Username ?? string.Empty),  // Lưu Username
-                new Claim(ClaimTypes.Email, user.Email),  // Lưu Email
-                new Claim(ClaimTypes.Role, user.Role.ToString())  // Cung cấp quyền cho user (Customer, Admin)
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email)
             };
 
-            var userIdentity = new ClaimsIdentity(userClaims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var principal = new ClaimsPrincipal(userIdentity);
+            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = loginDTO.RememberMe // Set the persistence of the authentication session based on RememberMe
+            };
 
-            // Đăng nhập người dùng
-            await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+            await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-            return Results.Ok("Login successful");
+            return Results.Ok();
         });
 
-        // POST method for logout
-        group.MapPost("/logout", async (HttpContext httpContext, ILogger<Program> logger) =>
+        // Đăng xuất
+        group.MapPost("/logout", async (HttpContext httpContext) =>
         {
-            logger.LogInformation("Logout attempt");
-
-            // Đăng xuất người dùng
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            logger.LogInformation("User logged out successfully");
-
-            // Redirect to home page after logout
-            return Results.Redirect("/");
-        });
-
-        // Route dành cho Admin
-        group.MapGet("/admin", [Authorize(Roles = "Admin")] (ILogger<Program> logger) =>
-        {
-            logger.LogInformation("Admin endpoint accessed.");
-            return Results.Ok("Welcome Admin!");
-        });
-
-        // Route dành cho Customer
-        group.MapGet("/customer", [Authorize(Roles = "Customer")] (ILogger<Program> logger) =>
-        {
-            logger.LogInformation("Customer endpoint accessed.");
-            return Results.Ok("Welcome Customer!");
+            return Results.Redirect("/"); // Redirect to the home page after logging out
         });
 
         return group;

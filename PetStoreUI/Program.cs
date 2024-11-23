@@ -35,7 +35,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll",
         builder =>
         {
-            builder.WithOrigins("http://localhost:5134")  // Ensure this matches the API origin
+            builder.WithOrigins("http://localhost:5135")  // Ensure this matches the UI origin
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    .AllowCredentials(); // Allow sending cookies
@@ -48,7 +48,7 @@ builder.Services.AddRazorPages();
 // Register HttpClient service (để gọi API từ UI)
 builder.Services.AddHttpClient("API", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5134"); // Địa chỉ của API backend
+    client.BaseAddress = new Uri("http://localhost:5134"); // Ensure this matches the API backend address
     client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
 

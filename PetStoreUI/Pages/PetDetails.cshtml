@@ -43,15 +43,24 @@ else
     <script>
         document.addEventListener('DOMContentLoaded', async function() {
             var cartElement = document.getElementById('cart-count');
-            var isAuthenticated = @User.Identity.IsAuthenticated.ToString().ToLower();
+            var isAuthenticated = '@(User.Identity.IsAuthenticated.ToString().ToLower())';
             if (cartElement && isAuthenticated === 'true') {
                 try {
-                    const response = await fetch('/cart/count');
+                    console.log('Fetching cart count...');
+                    const response = await fetch('http://localhost:5134/Cart/count', { // Ensure this matches the API backend address
+                        credentials: 'include', // Ensure cookies are sent with the request
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest' // Add this header to indicate an AJAX request
+                        }
+                    });
+                    console.log('Response status:', response.status);
+                    console.log('Response status text:', response.statusText);
                     if (response.ok) {
-                        const cartCount = await response.json();
-                        cartElement.textContent = cartCount;
+                        const cart = await response.json();
+                        cartElement.textContent = String(cart.count); // Ensure the count is displayed as a string
                     } else {
-                        console.error('Failed to fetch cart count:', response.statusText);
+                        console.error('Failed to fetch cart count:', response.status, response.statusText);
                     }
                 } catch (error) {
                     console.error('Error fetching cart count:', error);
@@ -64,21 +73,37 @@ else
             var cartElement = document.getElementById('cart-count');
 
             try {
-                const response = await fetch('/cart', {
+                console.log('Adding pet to cart...');
+                const response = await fetch('http://localhost:5134/Cart', { // Ensure this matches the API backend address
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include', // Ensure cookies are sent with the request
                     body: JSON.stringify({ PetId: petId, Quantity: parseInt(quantity) })
                 });
 
+                console.log('Response status:', response.status);
+                console.log('Response status text:', response.statusText);
+
+                if (response.status === 401) {
+                    showToast('Please log in to add items to the cart.');
+                    return;
+                }
+
                 if (response.ok) {
-                    const cartCountResponse = await fetch('/cart/count');
+                    const cartCountResponse = await fetch('http://localhost:5134/Cart/count', { // Ensure this matches the API backend address
+                        credentials: 'include', // Ensure cookies are sent with the request
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest' // Add this header to indicate an AJAX request
+                        }
+                    });
                     if (cartCountResponse.ok) {
-                        const cartCount = await cartCountResponse.json();
-                        cartElement.textContent = cartCount;
+                        const cart = await cartCountResponse.json();
+                        cartElement.textContent = String(cart.count); // Ensure the count is displayed as a string
                     } else {
-                        console.error('Failed to fetch cart count:', cartCountResponse.statusText);
+                        console.error('Failed to fetch cart count:', cartCountResponse.status, cartCountResponse.statusText);
                     }
                     showToast('Pet was added to cart.');
                 } else {

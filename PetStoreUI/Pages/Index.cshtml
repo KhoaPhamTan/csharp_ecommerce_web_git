@@ -62,14 +62,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (cartElement && isAuthenticated === 'true') {
         try {
             console.log('Fetching cart count...');
-            const response = await fetch('/cart/count', {
+            const response = await fetch('http://localhost:5134/Cart/count', { // Ensure this matches the API backend address
                 credentials: 'include' // Ensure cookies are sent with the request
             });
             console.log('Response status:', response.status);
             console.log('Response status text:', response.statusText);
             if (response.ok) {
-                const cartCount = await response.json();
-                cartElement.textContent = cartCount;
+                const cart = await response.json();
+                cartElement.textContent = String(cart.count); // Ensure the count is displayed as a string
             } else {
                 console.error('Failed to fetch cart count:', response.status, response.statusText);
             }
@@ -91,7 +91,7 @@ async function addToCart(petId) {
 
     try {
         console.log('Adding pet to cart...');
-        const response = await fetch('/cart', {
+        const response = await fetch('http://localhost:5134/Cart', { // Ensure this matches the API backend address
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -109,12 +109,12 @@ async function addToCart(petId) {
         }
 
         if (response.ok) {
-            const cartCountResponse = await fetch('/cart/count', {
+            const cartCountResponse = await fetch('http://localhost:5134/Cart/count', { // Ensure this matches the API backend address
                 credentials: 'include' // Ensure cookies are sent with the request
             });
             if (cartCountResponse.ok) {
-                const cartCount = await cartCountResponse.json();
-                cartElement.textContent = cartCount;
+                const cart = await cartCountResponse.json();
+                cartElement.textContent = String(cart.count); // Ensure the count is displayed as a string
             } else {
                 console.error('Failed to fetch cart count:', cartCountResponse.status, cartCountResponse.statusText);
             }

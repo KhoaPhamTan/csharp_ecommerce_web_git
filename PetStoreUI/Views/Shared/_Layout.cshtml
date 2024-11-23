@@ -1,7 +1,8 @@
 ﻿@using PetStoreAPI.Data
 @using Microsoft.EntityFrameworkCore
 @using PetStoreAPI.Entities
-@inject PetStoreDbContext DbContext
+@using System.Security.Claims
+@inject PetStoreAPI.Data.PetStoreDbContext DbContext
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,8 +18,9 @@
 <body>
     @* Fetch categories from the database *@
     @{
-        var categories = DbContext.Categories?.ToList() ?? new List<CategoryEntity>(); 
-        var userName = User.Identity?.Name;
+        var categories = DbContext.Categories?.ToList() ?? new List<CategoryEntity>();
+        var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+        var userName = userEmail != null ? DbContext.Users.FirstOrDefault(u => u.Email == userEmail)?.Username : null;
     }
 
     <header class="header">
@@ -50,7 +52,7 @@
             @if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 <a href="javascript:document.getElementById('logout-form').submit();" class="nav-link">Logout</a>
-                <form id="logout-form" method="post" action="/users/logout" style="display:none;">
+                <form id="logout-form" method="post" action="/Users/logout" style="display:none;">
                     @Html.AntiForgeryToken()
                 </form>
             }
@@ -60,7 +62,7 @@
                 <a asp-page="/Account/Register" class="nav-link">Register</a>
             }
             <a asp-page="/Help" class="nav-link">Help</a>
-            <a href="/Cart" class="nav-link cart-container">
+            <a href="/Cart/Cart" class="nav-link cart-container">
                 <img src="@Url.Content("~/images/cart-icon.png")" alt="Cart" class="cart-icon" />
                 <span id="cart-count" class="cart-count">0</span>
             </a>
@@ -72,33 +74,42 @@
     </main>
 
     <footer>
-        <p>&copy; 2024 - Pet Store</p>
-    </footer>
-    <script>
-        document.addEventListener('DOMContentLoaded', async function() {
-            var cartElement = document.getElementById('cart-count');
-            var isAuthenticated = '@(User.Identity.IsAuthenticated.ToString().ToLower())';
-            if (cartElement && isAuthenticated === 'true') {
-                try {
-                    console.log('Fetching cart count...');
-                    const response = await fetch('/cart/count', {
-                        credentials: 'include' // Ensure cookies are sent with the request
-                    });
-                    console.log('Response status:', response.status);
-                    console.log('Response status text:', response.statusText);
-                    if (response.ok) {
-                        const cartCount = await response.json();
-                        cartElement.textContent = cartCount;
-                    } else {
-                        console.error('Failed to fetch cart count:', response.status, response.statusText);
+    <p>&copy; 2024 - Pet Store</p>
+</footer>
+<script>
+    document.addEventListener('DOMContentLoaded', async function() {
+        var cartElement = document.getElementById('cart-count');
+        var isAuthenticated = '@(User.Identity.IsAuthenticated.ToString().ToLower())';
+        if (cartElement && isAuthenticated === 'true') {
+            try {
+                console.log('Fetching cart count...');
+                const response = await fetch('http://localhost:5134/Cart/count', { // Ensure this matches the API backend address
+                    credentials: 'include', // Ensure cookies are sent with the request
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest' // Add this header to indicate an AJAX request
                     }
-                } catch (error) {
-                    console.error('Error fetching cart count:', error);
+                });
+                console.log('Response status:', response.status);
+                console.log('Response status text:', response.statusText);
+                if (response.ok) {
+                    const cart = await response.json();
+                    console.log('Cart response:', cart);
+                    if (typeof cart.count === 'number' || typeof cart.count === 'string') {
+                        cartElement.textContent = String(cart.count); // Ensure the count is displayed as a string
+                    } else {
+                        console.error('Unexpected cart count value:', cart.count);
+                    }
+                } else {
+                    console.error('Failed to fetch cart count:', response.status, response.statusText);
                 }
+            } catch (error) {
+                console.error('Error fetching cart count:', error);
             }
-        });
-    </script>
-    @RenderSection("Scripts", required: false)
+        }
+    });
+</script>
+@RenderSection("Scripts", required: false)
 </body>
 
 </html>
