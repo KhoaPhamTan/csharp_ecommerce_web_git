@@ -61,7 +61,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();  // Bật HSTS trong production để sử dụng HTTPS
 }
 
-app.UseStaticFiles(); // Đảm bảo phục vụ file tĩnh
+app.UseStaticFiles(); // Ensure static files are served
 
 app.UseRouting();
 
@@ -72,16 +72,17 @@ app.UseCors("AllowAll"); // Ensure CORS is used before authentication and author
 app.UseAuthentication();
 app.UseAuthorization(); // Ensure authorization middleware is used
 
-// Map Razor Pages (để xử lý trang Razor Pages)
-app.MapRazorPages();
+// Map Razor Pages
+app.MapRazorPages(); // Ensure Razor Pages are mapped
 
-// Map API endpoints (giả sử bạn có những endpoint như MapStoresEndPoints, MapUserEndpoints, v.v.)
-app.MapStoresEndPoints();
+// Map endpoints
+app.MapCheckoutEndpoints();
 app.MapCartEndpoints();
 app.MapRegistrationEndpoints();
 app.MapPetEndpoints();
-app.MapCategoryEndpoints(); // Đảm bảo ánh xạ endpoint cho Category
-app.MapUserEndpoints(); // Ánh xạ các endpoint cho người dùng (đảm bảo chỉ ánh xạ một lần)
+app.MapCategoryEndpoints();
+app.MapUserEndpoints();
+app.MapStoresEndPoints();
 
 // Run the application
 app.Run();

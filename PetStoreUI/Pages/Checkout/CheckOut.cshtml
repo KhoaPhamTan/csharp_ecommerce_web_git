@@ -1,0 +1,67 @@
+@page
+@model PetStoreUI.Pages.Checkout.CheckoutModel
+@{
+    ViewData["Title"] = "Checkout";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/checkout.css" />
+}
+
+<h1 class="text-center">Checkout</h1>
+
+@if (!string.IsNullOrEmpty(Model.FullName) && !string.IsNullOrEmpty(Model.Email) && !string.IsNullOrEmpty(Model.Address))
+{
+    <div class="checkout-container">
+        <h2 class="text-center">User Details</h2>
+        <div class="user-details">
+            <p><strong>Name:</strong> @Model.FullName</p>
+            <p><strong>Email:</strong> @Model.Email</p>
+            <p><strong>Address:</strong> @Model.Address</p>
+            <p><strong>Phone:</strong> <input type="text" id="phone" class="form-control" placeholder="Enter your phone number" /></p>
+        </div>
+        <form id="checkoutForm">
+            <button type="submit" class="btn btn-primary">Confirm Order</button>
+        </form>
+    </div>
+}
+else
+{
+    <p class="text-center">User details not found.</p>
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            console.log("Document loaded checkout"); // Debugging information
+
+            $('#checkoutForm').on('submit', function(event) {
+                event.preventDefault();
+                console.log("Confirm Order button clicked"); // Debugging information
+                var phone = $('#phone').val();
+                if (!phone) {
+                    alert('Please enter your phone number.');
+                    return false;
+                }
+                console.log("Phone number entered:", phone); // Debugging information
+
+                $.ajax({
+                    url: '/api/checkout',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ phone: phone }),
+                    success: function(response) {
+                        console.log("Checkout successful:", response); // Debugging information
+                        window.location.href = '/';
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error during checkout:", xhr.responseText);
+                        alert('Failed to complete checkout. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+}

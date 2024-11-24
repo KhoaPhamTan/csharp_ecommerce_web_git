@@ -40,7 +40,7 @@ namespace PetStoreAPI.Data
             modelBuilder.Entity<UserEntity>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).IsRequired().HasMaxLength(36); // Ensure Id is required and has a max length
+                entity.Property(e => e.Id).IsRequired(); // Ensure Id is configured as int
                 entity.Property(e => e.Username).IsRequired();
                 entity.Property(e => e.Password).IsRequired();
                 entity.Property(e => e.FullName).IsRequired();
@@ -53,22 +53,22 @@ namespace PetStoreAPI.Data
             modelBuilder.Entity<CartItemEntity>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.UserId).IsRequired();
                 entity.Property(e => e.PetId).IsRequired();
                 entity.Property(e => e.Quantity).IsRequired();
                 entity.Property(e => e.DateAdded).IsRequired();
-
-                // Configure relationship with UserEntity
-                entity.HasOne<UserEntity>()
-                      .WithMany()
-                      .HasForeignKey(e => e.UserId)
-                      .OnDelete(DeleteBehavior.Cascade); // Thêm hành vi xóa cascade nếu cần thiết
+                entity.Property(e => e.UserId).IsRequired(); // Ensure UserId is configured as int
 
                 // Configure relationship with PetStoreEntity
                 entity.HasOne(e => e.Pet)
-                      .WithMany()  // Nếu Pet có thể có nhiều CartItem
+                      .WithMany()  // If Pet can have many CartItems
                       .HasForeignKey(e => e.PetId)
-                      .OnDelete(DeleteBehavior.Cascade); // Thêm hành vi xóa cascade nếu cần thiết
+                      .OnDelete(DeleteBehavior.Cascade); // Add cascade delete behavior if needed
+
+                // Configure relationship with UserEntity
+                entity.HasOne(e => e.User)
+                      .WithMany()  // If User can have many CartItems
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Cascade); // Add cascade delete behavior if needed
             });
 
             // Configure other entities...

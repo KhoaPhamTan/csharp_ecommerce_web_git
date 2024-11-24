@@ -97,12 +97,25 @@ namespace PetStoreUI.Pages.Account
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Ensure userId is set as string
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role.ToString())
+                new Claim(ClaimTypes.Role, user.Role.ToString()) // Add role claim
             };
 
             var userClaimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(userClaimsIdentity));
+            var authProperties = new AuthenticationProperties
+            {
+                IsPersistent = true // Set the persistence of the authentication session
+            };
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(userClaimsIdentity), authProperties);
+
+            // Log the claims for debugging
+            _logger.LogInformation("User logged in with the following claims:");
+            foreach (var claim in claims)
+            {
+                _logger.LogInformation($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
+            }
 
             // Bảo vệ returnUrl để đảm bảo người dùng không bị redirect ra ngoài ứng dụng
             if (!Url.IsLocalUrl(returnUrl))

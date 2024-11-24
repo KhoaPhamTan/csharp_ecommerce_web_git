@@ -1,5 +1,6 @@
 @page "{id:int}"
 @model PetStoreUI.Pages.PetDetailsModel
+@using System.Security.Claims
 @{
     ViewData["Title"] = "Pet Details";
     Layout = "_Layout";
@@ -21,7 +22,6 @@
             <img src="@Url.Content("~/" + Model.Pet.ImageUrl)" alt="Pet Image" class="pet-image"/>
             <h3>@Model.Pet.PetName</h3>
             <div class="pet-details-info">
-                <p><strong>Category:</strong> @Model.Pet.Category.Name</p>
                 <p><strong>Gender:</strong> @Model.Pet.Gender</p>
                 <p><strong>Description:</strong> @Model.Pet.PetDescription</p>
                 <p><strong>Price:</strong> $ @Model.Pet.Price</p>
@@ -40,93 +40,48 @@ else
 }
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async function() {
-            var cartElement = document.getElementById('cart-count');
-            var isAuthenticated = '@(User.Identity.IsAuthenticated.ToString().ToLower())';
-            if (cartElement && isAuthenticated === 'true') {
-                try {
-                    console.log('Fetching cart count...');
-                    const response = await fetch('http://localhost:5134/Cart/count', { // Ensure this matches the API backend address
-                        credentials: 'include', // Ensure cookies are sent with the request
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest' // Add this header to indicate an AJAX request
-                        }
-                    });
-                    console.log('Response status:', response.status);
-                    console.log('Response status text:', response.statusText);
-                    if (response.ok) {
-                        const cart = await response.json();
-                        cartElement.textContent = String(cart.count); // Ensure the count is displayed as a string
-                    } else {
-                        console.error('Failed to fetch cart count:', response.status, response.statusText);
-                    }
-                } catch (error) {
-                    console.error('Error fetching cart count:', error);
-                }
-            }
-        });
-
-        async function addToCart(petId) {
-            var quantity = document.getElementById('quantity-' + petId).value;
-            var cartElement = document.getElementById('cart-count');
-
-            try {
-                console.log('Adding pet to cart...');
-                const response = await fetch('http://localhost:5134/Cart', { // Ensure this matches the API backend address
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include', // Ensure cookies are sent with the request
-                    body: JSON.stringify({ PetId: petId, Quantity: parseInt(quantity) })
-                });
-
-                console.log('Response status:', response.status);
-                console.log('Response status text:', response.statusText);
-
-                if (response.status === 401) {
-                    showToast('Please log in to add items to the cart.');
-                    return;
-                }
-
-                if (response.ok) {
-                    const cartCountResponse = await fetch('http://localhost:5134/Cart/count', { // Ensure this matches the API backend address
-                        credentials: 'include', // Ensure cookies are sent with the request
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest' // Add this header to indicate an AJAX request
-                        }
-                    });
-                    if (cartCountResponse.ok) {
-                        const cart = await cartCountResponse.json();
-                        cartElement.textContent = String(cart.count); // Ensure the count is displayed as a string
-                    } else {
-                        console.error('Failed to fetch cart count:', cartCountResponse.status, cartCountResponse.statusText);
-                    }
-                    showToast('Pet was added to cart.');
-                } else {
-                    showToast('Failed to add pet to cart.');
-                }
-            } catch (error) {
-                showToast('Error adding pet to cart.');
-                console.error('Error adding pet to cart:', error);
-            }
-        }
-
         function showToast(message) {
             var toast = document.createElement('div');
             toast.className = 'toast';
-            toast.textContent = message;
+            toast.innerText = message;
             document.body.appendChild(toast);
             setTimeout(function() {
-                toast.classList.add('show');
+                toast.className = 'toast show';
+                setTimeout(function() {
+                    toast.className = 'toast';
+                    setTimeout(function() {
+                        document.body.removeChild(toast);
+                    }, 500);
+                }, 2500);
             }, 100);
-            setTimeout(function() {
-                toast.classList.remove('show');
-                document.body.removeChild(toast);
-            }, 3000);
+        }
+
+        function addToCart(petId) {
+            console.log("UserEmail:", userEmail); // Debugging information
+            if (!userEmail) {
+                showToast("User is not logged in.");
+                return;
+            }
+            var quantity = $('#quantity-' + petId).val();
+            $.ajax({
+                url: '/cart',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ petId: petId, quantity: quantity, userEmail: userEmail }),
+                success: function() {
+                    var cartCountElement = $('#cart-count');
+                    var currentCount = parseInt(cartCountElement.text()) || 0;
+                    var newCount = currentCount + parseInt(quantity);
+                    cartCountElement.text(newCount);
+                    showToast('Added to cart');
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", xhr.responseText); // Debugging information
+                    showToast('Failed to add to cart');
+                }
+            });
         }
     </script>
 }

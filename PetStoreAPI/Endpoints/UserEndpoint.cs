@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using PetStoreAPI.Entities;
 
 namespace PetStoreAPI.Endpoints;
 
@@ -17,7 +16,7 @@ public static class UserEndpoint
         var group = app.MapGroup("/Users");
 
         // Đăng nhập
-        group.MapPost("/login", async ([FromBody] LoginDTO loginDTO, PetStoreDbContext db, HttpContext httpContext) =>
+        group.MapPost("/login", async ([FromBody] LoginDTO loginDTO, PetStoreDbContext db, HttpContext httpContext, ILogger<Program> logger) =>
         {
             var user = await db.Users.FirstOrDefaultAsync(u => u.Email == loginDTO.Email && u.Password == loginDTO.Password);
             if (user == null)
@@ -28,8 +27,9 @@ public static class UserEndpoint
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email)
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), // Ensure userId is set as string
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role.ToString()) // Add role claim
             };
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -39,6 +39,13 @@ public static class UserEndpoint
             };
 
             await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+
+            // Log the claims for debugging
+            logger.LogInformation("User logged in with the following claims:");
+            foreach (var claim in claims)
+            {
+                logger.LogInformation($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
+            }
 
             return Results.Ok();
         });

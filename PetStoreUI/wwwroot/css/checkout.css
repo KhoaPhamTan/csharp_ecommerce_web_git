@@ -1,0 +1,52 @@
+.checkout-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.checkout-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+    text-align: center;
+}
+
+.checkout-container .user-details {
+    text-align: left;
+}
+
+.checkout-container p {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #555;
+}
+
+.checkout-container p strong {
+    display: inline-block;
+    width: 90px; /* Increase width to add more space */
+}
+
+.checkout-container .form-control {
+    display: inline-block;
+    width: calc(160px); /* Adjust width accordingly */
+    
+}
+
+.checkout-container .btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    font-size: 18px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.checkout-container .btn:hover {
+    background-color: #0056b3;
+}

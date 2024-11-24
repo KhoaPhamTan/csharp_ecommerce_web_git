@@ -12,19 +12,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Pet Store</title>
     <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        .header-title {
+            text-decoration: none; /* Remove underline */
+        }
+    </style>
     @RenderSection("Styles", required: false)
 </head>
 
 <body>
-    @* Fetch categories from the database *@
+
     @{
         var categories = DbContext.Categories?.ToList() ?? new List<CategoryEntity>();
         var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
-        var userName = userEmail != null ? DbContext.Users.FirstOrDefault(u => u.Email == userEmail)?.Username : null;
+        var user = userEmail != null ? DbContext.Users.FirstOrDefault(u => u.Email == userEmail) : null;
+        var userName = user?.Username;
+        var userId = user?.Id;
     }
 
     <header class="header">
-        <div class="header-title">Pet Store</div>
+        <a href="/" class="header-title">Pet Store</a>
     </header>
 
     <nav class="navbar">
@@ -61,7 +68,7 @@
                 <a asp-page="/Account/Login" class="nav-link">Login</a>
                 <a asp-page="/Account/Register" class="nav-link">Register</a>
             }
-            <a asp-page="/Help" class="nav-link">Help</a>
+            <a href="/Help" class="nav-link">Help</a>
             <a href="/Cart/Cart" class="nav-link cart-container">
                 <img src="@Url.Content("~/images/cart-icon.png")" alt="Cart" class="cart-icon" />
                 <span id="cart-count" class="cart-count">0</span>
@@ -74,42 +81,27 @@
     </main>
 
     <footer>
-    <p>&copy; 2024 - Pet Store</p>
-</footer>
-<script>
-    document.addEventListener('DOMContentLoaded', async function() {
-        var cartElement = document.getElementById('cart-count');
-        var isAuthenticated = '@(User.Identity.IsAuthenticated.ToString().ToLower())';
-        if (cartElement && isAuthenticated === 'true') {
-            try {
-                console.log('Fetching cart count...');
-                const response = await fetch('http://localhost:5134/Cart/count', { // Ensure this matches the API backend address
-                    credentials: 'include', // Ensure cookies are sent with the request
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest' // Add this header to indicate an AJAX request
-                    }
-                });
-                console.log('Response status:', response.status);
-                console.log('Response status text:', response.statusText);
-                if (response.ok) {
-                    const cart = await response.json();
-                    console.log('Cart response:', cart);
-                    if (typeof cart.count === 'number' || typeof cart.count === 'string') {
-                        cartElement.textContent = String(cart.count); // Ensure the count is displayed as a string
-                    } else {
-                        console.error('Unexpected cart count value:', cart.count);
-                    }
-                } else {
-                    console.error('Failed to fetch cart count:', response.status, response.statusText);
-                }
-            } catch (error) {
-                console.error('Error fetching cart count:', error);
+        <p>&copy; 2024 - Pet Store</p>
+    </footer>
+    <script src="~/js/site.js"></script>
+    <script>
+        var userEmail = '@userEmail'; // Store the UserEmail in a JavaScript variable
+        console.log("UserEmail from layout:", userEmail); // Debugging information
+
+        // Fetch cart count from the server
+        document.addEventListener("DOMContentLoaded", function() {
+            if (userEmail) {
+                fetch(`/cart/count?userEmail=${userEmail}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var cartCountElement = document.getElementById('cart-count');
+                        cartCountElement.textContent = data.count;
+                    })
+                    .catch(error => console.error('Error fetching cart count:', error));
             }
-        }
-    });
-</script>
-@RenderSection("Scripts", required: false)
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
 </body>
 
 </html>

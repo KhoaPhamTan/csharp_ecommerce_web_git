@@ -3,7 +3,6 @@ using PetStoreAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using PetStoreLibrary.DTOs;
 using PetStoreAPI.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
@@ -13,131 +12,204 @@ namespace PetStoreAPI.Endpoints
     {
         public static RouteGroupBuilder MapCartEndpoints(this WebApplication app)
         {
-            var group = app.MapGroup("/Cart").RequireCors("AllowSpecificOrigin"); // Ensure the base path is correctly set to /Cart and CORS policy is applied
+            var group = app.MapGroup("/cart");
 
-            // Thêm sản phẩm vào giỏ hàng
-            group.MapPost("/", [Authorize] async ([FromBody] CartItemDTO cartItem, PetStoreDbContext db, HttpContext httpContext, ILogger<Program> logger) =>
+            // Add item to cart
+            group.MapPost("/", async ([FromBody] CartItemDTO cartItem, PetStoreDbContext db, ILogger<Program> logger) =>
             {
-                var userEmail = httpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-                if (userEmail == null)
+                logger.LogInformation("Received request to add item to cart: {@CartItem}", cartItem);
+
+                // Fetch the pet from the database
+                var pet = await db.PetStores.FindAsync(cartItem.PetId);
+
+                // Check if the pet exists
+                if (pet == null)
                 {
-                    logger.LogWarning("Unauthorized access attempt to add to cart.");
-                    return Results.Unauthorized();
+                    logger.LogWarning("Invalid PetId: {PetId}", cartItem.PetId);
+                    return Results.BadRequest("Invalid PetId");
                 }
 
-                if (db.Users == null)
-                {
-                    logger.LogWarning("Users DbSet is null.");
-                    return Results.Problem("Internal server error", statusCode: 500);
-                }
+                // Fetch the user from the database
+                var user = await db.Users.FirstOrDefaultAsync(u => u.Email == cartItem.UserEmail);
 
-                var user = await db.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+                // Check if the user exists
                 if (user == null)
                 {
-                    logger.LogWarning("User not found: {UserEmail}", userEmail);
-                    return Results.Unauthorized();
+                    logger.LogWarning("Invalid UserEmail: {UserEmail}", cartItem.UserEmail);
+                    return Results.BadRequest("Invalid UserEmail");
                 }
 
-                try
+                // Check if the pet already exists in the cart
+                var existingCartItem = await db.CartItems.FirstOrDefaultAsync(c => c.PetId == cartItem.PetId && c.UserEmail == cartItem.UserEmail);
+
+                if (existingCartItem != null)
                 {
-                    // Fetch the pet from the database
-                    var pet = await db.PetStores.FindAsync(cartItem.PetId);
-
-                    // Check if the pet exists
-                    if (pet == null)
-                    {
-                        logger.LogWarning("Invalid PetId: {PetId}", cartItem.PetId);
-                        return Results.BadRequest("Invalid PetId");
-                    }
-
+                    // Update the quantity if the pet already exists in the cart
+                    existingCartItem.Quantity += cartItem.Quantity;
+                    await db.SaveChangesAsync();
+                    logger.LogInformation("Updated quantity for existing cart item: {@CartItemEntity}", existingCartItem);
+                    return Results.Ok(existingCartItem);
+                }
+                else
+                {
+                    // Add a new cart item if the pet does not exist in the cart
                     var item = new CartItemEntity
                     {
-                        UserId = user.Id,
                         PetId = cartItem.PetId,
                         Quantity = cartItem.Quantity,
                         DateAdded = DateOnly.FromDateTime(DateTime.Now),
-                        Pet = pet // Set the required Pet property
+                        UserEmail = cartItem.UserEmail, // Use UserEmail instead of UserId
+                        UserId = user.Id, // Set the required UserId property
+                        Pet = pet, // Set the required Pet property
+                        User = user // Set the required User property
                     };
 
                     db.CartItems.Add(item);
                     await db.SaveChangesAsync();
-                    logger.LogInformation("Added pet {PetId} to cart for user {UserId}", cartItem.PetId, user.Id);
-                    return Results.Created($"/Cart/{item.Id}", item); // Ensure the URL is correctly set
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "Error adding pet to cart for user {UserId}", user.Id);
-                    return Results.Problem("Internal server error", statusCode: 500);
+                    logger.LogInformation("Item added to cart: {@CartItemEntity}", item);
+                    return Results.Created($"/cart/{item.Id}", item);
                 }
             });
 
-            // Lấy danh sách giỏ hàng
-            group.MapGet("/", [Authorize] async (PetStoreDbContext db, HttpContext httpContext, ILogger<Program> logger) =>
+            // Update cart item quantity
+            group.MapPost("/update", async ([FromBody] CartItemDTO cartItem, PetStoreDbContext db, ILogger<Program> logger) =>
             {
-                var userEmail = httpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-                if (userEmail == null)
+                logger.LogInformation("Received request to update cart item quantity: {@CartItem}", cartItem);
+
+                // Fetch the cart item from the database
+                var item = await db.CartItems.FirstOrDefaultAsync(c => c.Id == cartItem.CartItemId && c.UserEmail == cartItem.UserEmail);
+
+                // Check if the cart item exists
+                if (item == null)
                 {
-                    logger.LogWarning("Unauthorized access attempt to get cart items.");
+                    logger.LogWarning("Invalid CartItemId or UserEmail: {CartItemId}, {UserEmail}", cartItem.CartItemId, cartItem.UserEmail);
+                    return Results.BadRequest("Invalid CartItemId or UserEmail");
+                }
+
+                // Update the quantity
+                item.Quantity = cartItem.Quantity;
+                await db.SaveChangesAsync();
+
+                logger.LogInformation("Cart item quantity updated: {@CartItemEntity}", item);
+                return Results.Ok(item);
+            });
+
+            // Remove item from cart
+            group.MapPost("/remove", async ([FromBody] CartItemDTO cartItem, PetStoreDbContext db, ILogger<Program> logger) =>
+            {
+                logger.LogInformation("Received request to remove cart item: {@CartItem}", cartItem);
+
+                // Fetch the cart item from the database
+                var item = await db.CartItems.FirstOrDefaultAsync(c => c.Id == cartItem.CartItemId && c.UserEmail == cartItem.UserEmail);
+
+                // Check if the cart item exists
+                if (item == null)
+                {
+                    logger.LogWarning("Invalid CartItemId or UserEmail: {CartItemId}, {UserEmail}", cartItem.CartItemId, cartItem.UserEmail);
+                    return Results.BadRequest("Invalid CartItemId or UserEmail");
+                }
+
+                // Remove the cart item
+                db.CartItems.Remove(item);
+                await db.SaveChangesAsync();
+
+                logger.LogInformation("Cart item removed: {@CartItemEntity}", item);
+                return Results.Ok();
+            });
+
+            // Get cart items for a specific user
+            group.MapGet("/", async (HttpContext httpContext, PetStoreDbContext db, ILogger<Program> logger) =>
+            {
+                // Check if the user is authenticated
+                if (!httpContext.User.Identity.IsAuthenticated)
+                {
+                    logger.LogWarning("Unauthorized access attempt.");
                     return Results.Unauthorized();
                 }
 
-                var user = await db.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+                // Get email from Claims
+                var emailClaim = httpContext.User?.FindFirst(ClaimTypes.Email)?.Value;
+                var userNameClaim = httpContext.User?.FindFirst(ClaimTypes.Name)?.Value;
+
+                logger.LogInformation($"Email from Claims: {emailClaim}");
+                logger.LogInformation($"User Name from Claims: {userNameClaim}");
+
+                // Log all claims for debugging
+                foreach (var claim in httpContext.User.Claims)
+                {
+                    logger.LogInformation($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
+                }
+
+                if (string.IsNullOrEmpty(emailClaim))
+                {
+                    logger.LogError("Email not found in Claims.");
+                    return Results.BadRequest("Email is required.");
+                }
+
+                // Fetch the user using the email
+                var user = await db.Users.FirstOrDefaultAsync(u => u.Email == emailClaim);
                 if (user == null)
                 {
-                    logger.LogWarning("User not found: {UserEmail}", userEmail);
-                    return Results.Unauthorized();
+                    logger.LogError("User not found for the provided email.");
+                    return Results.BadRequest("User not found.");
                 }
 
+                var userEmail = emailClaim;
+
+                // Get the cart items for the user
                 var cartItems = await db.CartItems
                     .Include(c => c.Pet)
-                    .Where(c => c.UserId == user.Id)
+                    .Where(c => c.UserEmail == userEmail)
+                    .GroupBy(c => c.PetId)
+                    .Select(g => new
+                    {
+                        CartItemId = g.First().Id,
+                        Pet = g.First().Pet,
+                        Quantity = g.Sum(c => c.Quantity)
+                    })
                     .ToListAsync();
 
-                // Map từ CartItemEntity sang CartItemDTO
-                var cartItemDTOs = cartItems.Select(item => new CartItemDTO(
-                    PetId: item.PetId,
-                    Quantity: item.Quantity,
-                    Price: item.Pet.Price, // Truyền giá trị Price từ Pet entity
-                    PetName: item.Pet.PetName // Truyền tên pet từ Pet entity
-                )).ToList();
-
-                logger.LogInformation("Fetched cart items for user {UserId}", user.Id);
-                return Results.Ok(cartItemDTOs);
+                return Results.Ok(cartItems);
             });
 
-            // Lấy số lượng sản phẩm trong giỏ hàng
-            group.MapGet("/count", [Authorize] async (PetStoreDbContext db, HttpContext httpContext, ILogger<Program> logger) =>
+            // Get cart count for a user
+            group.MapGet("/count", async (HttpContext httpContext, PetStoreDbContext db, ILogger<Program> logger) =>
             {
-                var userEmail = httpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-                logger.LogInformation("Fetching cart count for user {UserEmail}", userEmail);
+                // Get email from Claims
+                var emailClaim = httpContext.User?.FindFirst(ClaimTypes.Email)?.Value;
+                var userNameClaim = httpContext.User?.FindFirst(ClaimTypes.Name)?.Value;
 
-                if (userEmail == null)
+                logger.LogInformation($"Email from Claims: {emailClaim}");
+                logger.LogInformation($"User Name from Claims: {userNameClaim}");
+
+                // Log all claims for debugging
+                foreach (var claim in httpContext.User.Claims)
                 {
-                    logger.LogWarning("Unauthorized access attempt to get cart count.");
-                    return Results.Unauthorized();
+                    logger.LogInformation($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
                 }
 
-                var user = await db.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+                if (string.IsNullOrEmpty(emailClaim))
+                {
+                    logger.LogError("Email not found in Claims.");
+                    return Results.BadRequest("Email is required.");
+                }
+
+                // Fetch the user using the email
+                var user = await db.Users.FirstOrDefaultAsync(u => u.Email == emailClaim);
                 if (user == null)
                 {
-                    logger.LogWarning("User not found: {UserEmail}", userEmail);
-                    return Results.Unauthorized();
+                    logger.LogError("User not found for the provided email.");
+                    return Results.BadRequest("User not found.");
                 }
 
-                try
-                {
-                    var cartCount = await db.CartItems
-                        .Where(c => c.UserId == user.Id)
-                        .SumAsync(c => c.Quantity);
+                var userEmail = emailClaim;
 
-                    logger.LogInformation("Fetched cart count for user {UserId}: {CartCount}", user.Id, cartCount);
-                    return Results.Ok(new { count = cartCount });
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "Error fetching cart count for user {UserId}", user.Id);
-                    return Results.Problem("Internal server error", statusCode: 500);
-                }
+                // Calculate the total quantity of items in the cart
+                var totalQuantity = await db.CartItems
+                    .Where(c => c.UserEmail == userEmail)
+                    .SumAsync(c => c.Quantity);
+
+                return Results.Ok(new { count = totalQuantity });
             });
 
             return group;

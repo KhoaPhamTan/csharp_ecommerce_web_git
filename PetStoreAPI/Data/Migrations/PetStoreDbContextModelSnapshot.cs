@@ -34,13 +34,16 @@ namespace PetStoreAPI.Data.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PetId");
 
-                    b.ToTable("CartItems");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CartItems", (string)null);
                 });
 
             modelBuilder.Entity("PetStoreAPI.Entities.CategoryEntity", b =>
@@ -55,7 +58,7 @@ namespace PetStoreAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
@@ -135,9 +138,9 @@ namespace PetStoreAPI.Data.Migrations
 
             modelBuilder.Entity("PetStoreAPI.Entities.UserEntity", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Id")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -164,7 +167,7 @@ namespace PetStoreAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("PetStoreAPI.Entities.CartItemEntity", b =>
@@ -175,7 +178,15 @@ namespace PetStoreAPI.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("PetStoreAPI.Entities.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Pet");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("PetStoreAPI.Entities.PetStoreEntity", b =>

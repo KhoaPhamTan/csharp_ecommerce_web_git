@@ -1,67 +1,84 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using PetStoreLibrary.DTOs;
-using PetStoreAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using PetStoreAPI.Data;
+using PetStoreAPI.Entities;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Security.Claims;
-using System.Net.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
-namespace PetStoreUI.Pages.Cart
+namespace PetStoreUI.Pages
 {
     public class CartModel : PageModel
     {
         private readonly PetStoreDbContext _dbContext;
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<CartModel> _logger;
 
-        public CartModel(PetStoreDbContext dbContext, IHttpClientFactory httpClientFactory, ILogger<CartModel> logger)
+        public CartModel(PetStoreDbContext dbContext, ILogger<CartModel> logger)
         {
             _dbContext = dbContext;
-            _httpClientFactory = httpClientFactory;
             _logger = logger;
         }
 
-        public List<CartItemDTO> CartItems { get; set; } = new List<CartItemDTO>();
+        public List<CartItemViewModel>? CartItems { get; set; }
+        public decimal TotalPrice { get; set; }
 
         public async Task OnGetAsync()
         {
-            var userName = User.Identity?.Name;
-            if (userName == null)
+            var emailClaim = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+            if (!string.IsNullOrEmpty(emailClaim))
             {
-                CartItems = new List<CartItemDTO>();
-                return;
-            }
-
-            // Construct the API URL
-            var apiUrl = "http://localhost:5134/Cart"; // Ensure this matches the API backend address
-            var uiUrl = HttpContext.Request.GetDisplayUrl();
-            _logger.LogInformation("Fetching cart items from API: {ApiUrl} for UI: {UiUrl}", apiUrl, uiUrl);
-
-            // Fetch cart items from the API for the logged-in user
-            var client = _httpClientFactory.CreateClient("API");
-            try
-            {
-                var request = new HttpRequestMessage(HttpMethod.Get, apiUrl);
-                request.Headers.Add("Cookie", Request.Headers["Cookie"].ToString());
-                var response = await client.SendAsync(request);
-                if (response.IsSuccessStatusCode)
+                var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == emailClaim);
+                if (user != null)
                 {
-                    var cartItems = await response.Content.ReadFromJsonAsync<List<CartItemDTO>>();
-                    CartItems = cartItems ?? new List<CartItemDTO>();
+                    var userEmail = user.Email;
+
+                    CartItems = await _dbContext.CartItems
+                        .Include(c => c.Pet)
+                        .Where(c => c.UserEmail == userEmail)
+                        .GroupBy(c => c.PetId)
+                        .Select(g => new CartItemViewModel
+                        {
+                            CartItemId = g.First().Id,
+                            Pet = g.First().Pet,
+                            Quantity = g.Sum(c => c.Quantity)
+                        })
+                        .ToListAsync();
+
+                    TotalPrice = CartItems.Sum(item => item.Pet.Price * item.Quantity);
                 }
                 else
                 {
-                    _logger.LogError("Failed to fetch cart items from API: {ApiUrl} for UI: {UiUrl}. Status code: {StatusCode}", apiUrl, uiUrl, response.StatusCode);
-                    CartItems = new List<CartItemDTO>();
+                    _logger.LogError("User not found for the provided email.");
+                    CartItems = new List<CartItemViewModel>();
+                    TotalPrice = 0;
                 }
             }
-            catch (Exception ex)
+            else
             {
-                _logger.LogError(ex, "Error fetching cart items from API: {ApiUrl} for UI: {UiUrl}", apiUrl, uiUrl);
-                CartItems = new List<CartItemDTO>();
+                _logger.LogError("Email not found in Claims.");
+                CartItems = new List<CartItemViewModel>();
+                TotalPrice = 0;
             }
         }
+
+        public async Task<IActionResult> OnPostUpdateCartAsync(int cartItemId, int quantity)
+        {
+            var cartItem = await _dbContext.CartItems.FirstOrDefaultAsync(ci => ci.Id == cartItemId);
+            if (cartItem != null)
+            {
+                cartItem.Quantity = quantity;
+                await _dbContext.SaveChangesAsync();
+            }
+            return RedirectToPage();
+        }
+    }
+
+    public class CartItemViewModel
+    {
+        public int CartItemId { get; set; }
+        public PetStoreEntity? Pet { get; set; }
+        public int Quantity { get; set; }
     }
 }
