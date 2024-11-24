@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PetStoreAPI.Data;
 
@@ -10,9 +11,11 @@ using PetStoreAPI.Data;
 namespace PetStoreAPI.Data.Migrations
 {
     [DbContext(typeof(PetStoreDbContext))]
-    partial class PetStoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241124121005_UpdateUserIdInCartItems")]
+    partial class UpdateUserIdInCartItems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
@@ -43,7 +46,7 @@ namespace PetStoreAPI.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("CartItems", (string)null);
+                    b.ToTable("CartItems");
                 });
 
             modelBuilder.Entity("PetStoreAPI.Entities.CategoryEntity", b =>
@@ -58,7 +61,7 @@ namespace PetStoreAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
 
                     b.HasData(
                         new
@@ -167,7 +170,7 @@ namespace PetStoreAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("PetStoreAPI.Entities.CartItemEntity", b =>

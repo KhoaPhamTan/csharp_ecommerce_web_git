@@ -34,15 +34,20 @@ namespace PetStoreUI.Pages
 
             SelectedCategory = categoryName;
 
-            PetStores = _dbContext.PetStores
-                .Include(p => p.Category)
-                .Where(p => p.Category.Name == categoryName)
-                .Select(p => new PetStoreDTO(p.Id, p.PetName, p.Category.Name, p.Gender, p.PetDescription, p.Price, DateOnly.FromDateTime(p.BirthDay), p.ImageUrl))
-                .ToList();
+            var petStoresQuery = _dbContext.PetStores.AsQueryable();
+            if (petStoresQuery != null)
+            {
+                PetStores = petStoresQuery.Include(p => p.Category)
+                    .Where(p => p.Category.Name == categoryName)
+                    .Select(p => new PetStoreDTO(p.Id, p.PetName, p.Category.Name, p.Gender, p.PetDescription, p.Price, DateOnly.FromDateTime(p.BirthDay), p.ImageUrl))
+                    .ToList();
+            }
 
-            Categories = _dbContext.Categories
-                .Select(c => new CategoryDTO(c.Id, c.Name))
-                .ToList();
+            var categoriesQuery = _dbContext.Categories.AsQueryable();
+            if (categoriesQuery != null)
+            {
+                Categories = categoriesQuery.Select(c => new CategoryDTO(c.Id, c.Name)).ToList();
+            }
         }
     }
 }

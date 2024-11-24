@@ -7,6 +7,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/cart.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
 }
 
 <h1>Shopping Cart</h1>
@@ -18,23 +19,27 @@
             <thead>
                 <tr>
                     <th>Pet Name</th>
-                    <th>Quantity</th>
+                    <th class="quantity-column">Quantity</th>
                     <th>Price</th>
                     <th>Total</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.CartItems)
                 {
                     <tr>
-                        <td>@item.Pet.PetName</td>
-                        <td>
-                            <button class="btn btn-secondary" onclick="updateQuantity(@item.Pet.Id, -1)">-</button>
-                            <span id="quantity-@item.Pet.Id">@item.Quantity</span>
-                            <button class="btn btn-secondary" onclick="updateQuantity(@item.Pet.Id, 1)">+</button>
+                        <td class="text-center">@item.Pet.PetName</td>
+                        <td class="text-center quantity-column">
+                            <button class="btn btn-secondary" onclick="updateQuantity(@item.CartItemId, -1)">-</button>
+                            <input type="number" id="quantity-@item.CartItemId" class="quantity-input" value="@item.Quantity" readonly />
+                            <button class="btn btn-secondary" onclick="updateQuantity(@item.CartItemId, 1)">+</button>
                         </td>
-                        <td>$@item.Pet.Price</td>
-                        <td id="total-@item.Pet.Id">$@(item.Pet.Price * item.Quantity)</td>
+                        <td class="text-center" data-price="@item.Pet.Price">$@item.Pet.Price</td>
+                        <td class="text-center" id="total-@item.CartItemId">$@(item.Pet.Price * item.Quantity)</td>
+                        <td class="text-center">
+                            <button class="btn btn-danger" onclick="removeFromCart(@item.CartItemId)">Remove</button>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -55,7 +60,7 @@ else
     <script>
         function updateQuantity(cartItemId, change) {
             var quantityElement = $('#quantity-' + cartItemId);
-            var currentQuantity = parseInt(quantityElement.text());
+            var currentQuantity = parseInt(quantityElement.val());
             var newQuantity = currentQuantity + change;
 
             if (newQuantity < 1) {
@@ -63,23 +68,48 @@ else
                 return;
             }
 
+            console.log("Updating quantity for cartItemId:", cartItemId, "New Quantity:", newQuantity); // Debugging information
+
             $.ajax({
                 url: '/cart/update',
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ cartItemId: cartItemId, quantity: newQuantity }),
+                data: JSON.stringify({ cartItemId: cartItemId, quantity: newQuantity, userEmail: userEmail }),
                 success: function() {
-                    quantityElement.text(newQuantity);
+                    quantityElement.val(newQuantity);
                     var priceElement = $('#total-' + cartItemId);
-                    var pricePerItem = parseFloat(priceElement.data('price'));
+                    var pricePerItem = parseFloat(priceElement.closest('tr').find('td[data-price]').data('price'));
                     priceElement.text('$' + (pricePerItem * newQuantity).toFixed(2));
                     updateTotalPrice();
+                    updateCartCount();
                 },
                 error: function(xhr, status, error) {
-                    console.error("Error:", xhr.responseText);
-                    alert('Failed to update quantity');
+                    console.error("Error updating quantity:", xhr.responseText);
+                    alert('Failed to update quantity. Please try again.');
                 }
             });
+        }
+
+        function removeFromCart(cartItemId) {
+            console.log("Removing cartItemId:", cartItemId); // Debugging information
+
+            if (confirm('Are you sure you want to remove this item from the cart?')) {
+                $.ajax({
+                    url: '/cart/remove',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ cartItemId: cartItemId, userEmail: userEmail }),
+                    success: function() {
+                        $('#quantity-' + cartItemId).closest('tr').remove();
+                        updateTotalPrice();
+                        updateCartCount();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error removing item from cart:", xhr.responseText);
+                        alert('Failed to remove item from cart. Please try again.');
+                    }
+                });
+            }
         }
 
         function updateTotalPrice() {
@@ -92,9 +122,26 @@ else
             $('#total-price').text(totalPrice.toFixed(2));
         }
 
-        function proceedToCheckout() {
-            alert('Proceeding to checkout...');
-            // Implement checkout logic here
+        function updateCartCount() {
+            $.ajax({
+                url: '/cart/count',
+                type: 'GET',
+                success: function(data) {
+                    $('#cart-count').text(data.count);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error updating cart count:", xhr.responseText);
+                }
+            });
         }
+
+        function proceedToCheckout() {
+            console.log("Proceed to Checkout button clicked"); // Debugging information
+            window.location.href = '/Checkout/CheckOut';
+        }
+
+        $(document).ready(function() {
+            console.log("Document loaded cart"); // Debugging information
+        });
     </script>
 }

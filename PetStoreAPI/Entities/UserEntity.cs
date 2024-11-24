@@ -9,7 +9,7 @@ namespace PetStoreAPI.Entities
 
     public class UserEntity
     {
-        public int Id { get; set; }  // Ensure Id is of type int
+        public int Id { get; set; } // Ensure userId is an integer
         public required string Username { get; set; }
         public required string Password { get; set; }
         public required string FullName { get; set; }

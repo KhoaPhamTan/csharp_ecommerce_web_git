@@ -40,7 +40,7 @@ namespace PetStoreAPI.Data
             modelBuilder.Entity<UserEntity>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).IsRequired(); // Ensure Id is required
+                entity.Property(e => e.Id).IsRequired(); // Ensure Id is configured as int
                 entity.Property(e => e.Username).IsRequired();
                 entity.Property(e => e.Password).IsRequired();
                 entity.Property(e => e.FullName).IsRequired();
@@ -56,7 +56,7 @@ namespace PetStoreAPI.Data
                 entity.Property(e => e.PetId).IsRequired();
                 entity.Property(e => e.Quantity).IsRequired();
                 entity.Property(e => e.DateAdded).IsRequired();
-                entity.Property(e => e.UserId).IsRequired(); // Ensure UserId matches the type of the primary key in UserEntity
+                entity.Property(e => e.UserId).IsRequired(); // Ensure UserId is configured as int
 
                 // Configure relationship with PetStoreEntity
                 entity.HasOne(e => e.Pet)

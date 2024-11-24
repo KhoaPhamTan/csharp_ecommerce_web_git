@@ -1,50 +1,101 @@
 .cart-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
+    width: 100%; /* Full width */
+    max-width: 800px; /* Maximum width */
+    margin: 0 auto; /* Center align */
+    padding: 20px; /* Padding */
+    border: 1px solid #ccc; /* Border */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #f9f9f9; /* Background color */
+}
+
+.cart-items {
+    margin-bottom: 20px; /* Margin bottom */
+}
+
+.cart-item {
+    display: flex; /* Flexbox layout */
+    justify-content: space-between; /* Space between items */
+    align-items: center; /* Center align items */
+    padding: 10px; /* Padding */
+    border-bottom: 1px solid #ddd; /* Border bottom */
+}
+
+.cart-item-details {
+    flex-grow: 1; /* Grow to fill space */
+}
+
+.cart-item-controls {
+    display: flex; /* Flexbox layout */
+    align-items: center; /* Center align items */
+}
+
+.cart-item-controls button {
+    margin: 0 5px; /* Margin */
 }
 
 .cart-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
+    width: 100%; /* Full width */
+    border-collapse: collapse; /* Collapse borders */
+    margin-bottom: 20px; /* Margin bottom */
 }
 
 .cart-table th, .cart-table td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
+    padding: 10px; /* Padding */
+    border: 1px solid #ddd; /* Border */
+    text-align: center; /* Center align text */
+}
+
+.cart-table .quantity-column {
+    width: 200px; /* Fixed width for the quantity column */
+}
+
+.cart-table .quantity-input {
+    width: 40px; /* Fixed width for the input field */
+    text-align: center; /* Center align text */
+}
+
+.cart-table .btn {
+    width: 30px; /* Fixed width for the buttons */
+    padding: 5px; /* Padding for the buttons */
+}
+
+.cart-table .btn-danger {
+    width: auto; /* Auto width for the remove button */
+    padding: 5px 10px; /* Padding for the remove button */
 }
 
 .cart-summary {
-    text-align: right;
-    margin-top: 20px;
+    text-align: right; /* Right align text */
+    margin-top: 20px; /* Margin top */
 }
 
 .cart-summary p {
-    font-size: 1.2em;
+    font-size: 1.2em; /* Font size */
 }
 
 .btn {
-    padding: 5px 10px;
-    margin: 0 5px;
-    cursor: pointer;
+    padding: 5px 10px; /* Padding */
+    margin: 0 5px; /* Margin */
+    cursor: pointer; /* Pointer cursor */
 }
 
 .btn-primary {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 3px;
+    background-color: #007bff; /* Background color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    border-radius: 3px; /* Rounded corners */
 }
 
 .btn-secondary {
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 3px;
+    background-color: #6c757d; /* Background color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    border-radius: 3px; /* Rounded corners */
+}
+
+.btn-danger {
+    background-color: #dc3545; /* Background color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    border-radius: 3px; /* Rounded corners */
 }
