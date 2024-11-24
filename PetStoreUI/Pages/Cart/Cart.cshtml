@@ -1,0 +1,100 @@
+@page
+@model PetStoreUI.Pages.CartModel
+@{
+    ViewData["Title"] = "Cart";
+    Layout = "_Layout";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/cart.css" />
+}
+
+<h1>Shopping Cart</h1>
+
+@if (Model.CartItems != null && Model.CartItems.Any())
+{
+    <div class="cart-container">
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Pet Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.CartItems)
+                {
+                    <tr>
+                        <td>@item.Pet.PetName</td>
+                        <td>
+                            <button class="btn btn-secondary" onclick="updateQuantity(@item.Pet.Id, -1)">-</button>
+                            <span id="quantity-@item.Pet.Id">@item.Quantity</span>
+                            <button class="btn btn-secondary" onclick="updateQuantity(@item.Pet.Id, 1)">+</button>
+                        </td>
+                        <td>$@item.Pet.Price</td>
+                        <td id="total-@item.Pet.Id">$@(item.Pet.Price * item.Quantity)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="cart-summary">
+            <p><strong>Total Price:</strong> $<span id="total-price">@Model.TotalPrice</span></p>
+            <button class="btn btn-primary" onclick="proceedToCheckout()">Proceed to Checkout</button>
+        </div>
+    </div>
+}
+else
+{
+    <p>Your cart is empty.</p>
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function updateQuantity(cartItemId, change) {
+            var quantityElement = $('#quantity-' + cartItemId);
+            var currentQuantity = parseInt(quantityElement.text());
+            var newQuantity = currentQuantity + change;
+
+            if (newQuantity < 1) {
+                alert('Quantity cannot be less than 1.');
+                return;
+            }
+
+            $.ajax({
+                url: '/cart/update',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ cartItemId: cartItemId, quantity: newQuantity }),
+                success: function() {
+                    quantityElement.text(newQuantity);
+                    var priceElement = $('#total-' + cartItemId);
+                    var pricePerItem = parseFloat(priceElement.data('price'));
+                    priceElement.text('$' + (pricePerItem * newQuantity).toFixed(2));
+                    updateTotalPrice();
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", xhr.responseText);
+                    alert('Failed to update quantity');
+                }
+            });
+        }
+
+        function updateTotalPrice() {
+            var totalPrice = 0;
+            $('.cart-table tbody tr').each(function() {
+                var totalElement = $(this).find('td[id^="total-"]');
+                var total = parseFloat(totalElement.text().replace('$', ''));
+                totalPrice += total;
+            });
+            $('#total-price').text(totalPrice.toFixed(2));
+        }
+
+        function proceedToCheckout() {
+            alert('Proceeding to checkout...');
+            // Implement checkout logic here
+        }
+    </script>
+}

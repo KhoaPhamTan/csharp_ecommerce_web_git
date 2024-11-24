@@ -1,7 +1,8 @@
 ﻿@using PetStoreAPI.Data
 @using Microsoft.EntityFrameworkCore
 @using PetStoreAPI.Entities
-@inject PetStoreDbContext DbContext
+@using System.Security.Claims
+@inject PetStoreAPI.Data.PetStoreDbContext DbContext
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,13 +12,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Pet Store</title>
     <link rel="stylesheet" href="~/css/site.css" />
+    @RenderSection("Styles", required: false)
 </head>
 
 <body>
+
     @{
-        var user = DbContext.Users.FirstOrDefault(u => u.Id == 1);
+        var categories = DbContext.Categories.ToList();
+        var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
+        var user = userEmail != null ? DbContext.Users.FirstOrDefault(u => u.Email == userEmail) : null;
         var userName = user?.Username;
-        var categories = DbContext.Categories.ToList(); 
+        var userId = user?.Id;
     }
 
     <header class="header">
@@ -26,23 +31,42 @@
 
     <nav class="navbar">
         <div class="nav-left">
-            <div class="welcome-message">Welcome, <strong>@userName</strong>, to the store!</div>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <div class="welcome-message">Welcome, <strong>@userName</strong>, to the store!</div>
+            }
+            else
+            {
+                <div class="welcome-message">Welcome to the store!</div>
+            }
         </div>
         <div class="nav-center">
             <ul class="nav">
                 @foreach (var category in categories)
                 {
                     <li class="nav-item">
-                        <a class="nav-link @(category.Name == ViewBag.SelectedCategory ? "active" : "")" href="/Home/Index?categoryName=@category.Name">@category.Name</a>
+                        <a class="nav-link @(category.Name == ViewBag.SelectedCategory ? "active" : "")" href="/?categoryName=@category.Name">@category.Name</a>
                     </li>
                 }
             </ul>
         </div>
         <div class="nav-right">
-            <a href="/Account/Register">Register</a>
-            <a href="/Home/Help">Help</a>
-            <a href="/Cart">
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <a href="javascript:document.getElementById('logout-form').submit();" class="nav-link">Logout</a>
+                <form id="logout-form" method="post" action="/Users/logout" style="display:none;">
+                    @Html.AntiForgeryToken()
+                </form>
+            }
+            else
+            {
+                <a asp-page="/Account/Login" class="nav-link">Login</a>
+                <a asp-page="/Account/Register" class="nav-link">Register</a>
+            }
+            <a asp-page="/Help" class="nav-link">Help</a>
+            <a href="/Cart/Cart" class="nav-link cart-container">
                 <img src="@Url.Content("~/images/cart-icon.png")" alt="Cart" class="cart-icon" />
+                <span id="cart-count" class="cart-count">0</span>
             </a>
         </div>
     </nav>
@@ -54,6 +78,25 @@
     <footer>
         <p>&copy; 2024 - Pet Store</p>
     </footer>
+    <script src="~/js/site.js"></script>
+    <script>
+        var userId = '@userId'; // Store the UserId in a JavaScript variable
+        console.log("UserId from layout:", userId); // Debugging information
+
+        // Fetch cart count from the server
+        document.addEventListener("DOMContentLoaded", function() {
+            if (userId && userId !== "null") {
+                fetch(`/cart/count?userId=${userId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var cartCountElement = document.getElementById('cart-count');
+                        cartCountElement.textContent = data.count;
+                    })
+                    .catch(error => console.error('Error fetching cart count:', error));
+        }
+    });
+    </script>
+    @RenderSection("Scripts", required: false)
 </body>
 
 </html>
