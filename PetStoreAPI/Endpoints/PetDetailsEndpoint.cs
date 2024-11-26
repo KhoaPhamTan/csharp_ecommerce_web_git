@@ -11,7 +11,7 @@ namespace PetStoreAPI.Endpoints
     {
         public static void MapPetEndpoints(this WebApplication app)
         {
-            app.MapGet("/api/pets/{id}", async (int id, PetStoreDbContext db) =>
+            app.MapGet("/pets/{id}", async (int id, PetStoreDbContext db) =>
             {
                 if (db.PetStores == null)
                 {

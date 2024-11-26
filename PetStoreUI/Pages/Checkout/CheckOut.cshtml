@@ -48,7 +48,7 @@ else
                 console.log("Phone number entered:", phone); // Debugging information
 
                 $.ajax({
-                    url: '/api/checkout',
+                    url: '/checkout',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({ phone: phone }),

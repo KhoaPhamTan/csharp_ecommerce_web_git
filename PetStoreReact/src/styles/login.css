@@ -1,0 +1,46 @@
+
+/* Styles for the login container */
+.login-container {
+  display: flex; /* Flexbox layout */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 45vh; /* 3/4 of the page height */
+}
+
+/* Styles for the login card */
+.login-card {
+  width: 100%; /* Full width */
+  max-width: 300px; /* Maximum width */
+  padding: 20px; /* Padding for spacing */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow for effect */
+  background-color: #ebbbbb; /* White background */
+  border-radius: 10px; /* Rounded corners */
+  text-align: center; /* Center align text */
+}
+
+/* Center form fields within the login card */
+.login-form .form-group {
+  display: flex; /* Flexbox layout */
+  flex-direction: row; /* Row direction */
+  align-items: center; /* Center align items */
+  justify-content: space-between; /* Space between label and input */
+  width: 100%; /* Full width */
+  margin-bottom: 15px; /* Margin for spacing */
+}
+
+.login-form .form-label {
+  flex: 1; /* Take up 1 part of the space */
+  text-align: left; /* Align text to the left */
+}
+
+.login-form .form-control {
+  flex: 2; /* Take up 2 parts of the space */
+}
+
+.login-form .btn {
+  display: block; /* Block display */
+  margin: 0 auto; /* Center the button */
+  font-size: bold; /* Bold font weight */
+  background-color: blue; /* White background */
+  color: white; /* White text color */
+}

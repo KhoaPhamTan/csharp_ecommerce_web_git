@@ -22,7 +22,7 @@ namespace PetStoreUI.Pages.Account
         public LoginModel(PetStoreDbContext dbContext, ILogger<LoginModel> logger)
         {
             _dbContext = dbContext;
-            _logger = logger;
+            _logger = _logger;
             Input = new LoginInputModel { Email = string.Empty, Password = string.Empty };
             ReturnUrl = string.Empty;
         }
@@ -84,14 +84,6 @@ namespace PetStoreUI.Pages.Account
                 return Page(); // Quay lại trang login
             }
 
-            // So sánh mật khẩu đã băm (hash) với mật khẩu người dùng nhập vào
-            if (!VerifyPassword(user.Password, Input.Password))
-            {
-                _logger.LogWarning("Mật khẩu sai cho người dùng: " + Input.Email);
-                ViewData["ErrorMessage"] = "Invalid email or password."; // Cung cấp thông báo lỗi cho người dùng
-                return Page(); // Quay lại trang login
-            }
-
             // Đăng nhập thành công, tạo claims và đăng nhập người dùng
             _logger.LogInformation("Đăng nhập thành công cho người dùng: " + Input.Email);
             var claims = new List<Claim>
@@ -125,17 +117,6 @@ namespace PetStoreUI.Pages.Account
 
             // Redirect về URL mong muốn sau khi đăng nhập thành công
             return LocalRedirect(returnUrl);
-        }
-
-        // Phương thức để kiểm tra mật khẩu (mã hóa password)
-        private bool VerifyPassword(string hashedPassword, string inputPassword)
-        {
-            // Sử dụng SHA256 để băm mật khẩu người dùng nhập vào
-            using var sha256 = SHA256.Create();
-            var inputHash = Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(inputPassword)));
-
-            // So sánh băm của mật khẩu input với mật khẩu đã băm trong DB
-            return inputHash == hashedPassword;
         }
     }
 }

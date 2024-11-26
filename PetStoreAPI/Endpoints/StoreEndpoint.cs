@@ -30,7 +30,7 @@ namespace PetStoreAPI.EndPoints
                     DateOnly.FromDateTime(pet.BirthDay),
                     pet.ImageUrl
                 )).ToList();
-                
+
                 return Results.Ok(petDtos);
             });
 

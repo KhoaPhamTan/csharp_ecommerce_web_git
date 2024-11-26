@@ -13,3 +13,6 @@ start register
 done register
 page details
 click to add to cart =>increase nunber ở add to cart icon
+---------------
+25/11/2024
+create react page

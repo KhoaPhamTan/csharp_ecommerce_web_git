@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace PetStoreAPI.Endpoints;
 
@@ -18,10 +20,34 @@ public static class UserEndpoint
         // Đăng nhập
         group.MapPost("/login", async ([FromBody] LoginDTO loginDTO, PetStoreDbContext db, HttpContext httpContext, ILogger<Program> logger) =>
         {
-            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == loginDTO.Email && u.Password == loginDTO.Password);
+            logger.LogInformation("Login attempt for email: {Email}", loginDTO.Email);
+
+            // Hash the input password
+            var hashedPassword = HashPassword(loginDTO.Password);
+
+            // Check if the user exists
+            var user = await db.Users.FirstOrDefaultAsync(u => u.Email == loginDTO.Email);
             if (user == null)
             {
+                logger.LogWarning("Login failed: User not found for email: {Email}", loginDTO.Email);
                 return Results.Unauthorized();
+            }
+
+            // Log the user's role from the database
+            logger.LogInformation("User found: {Email}, Role: {Role}", user.Email, user.Role.ToString());
+
+            // Check if the password is correct
+            if (user.Password != hashedPassword)
+            {
+                logger.LogWarning("Login failed: Incorrect password for email: {Email}", loginDTO.Email);
+                return Results.Unauthorized();
+            }
+
+            // Check if the user has the admin role (case-insensitive)
+            if (!user.Role.ToString().Equals("admin", StringComparison.OrdinalIgnoreCase))
+            {
+                logger.LogWarning("Login failed: User does not have admin role for email: {Email}", loginDTO.Email);
+                return Results.Forbid();
             }
 
             var claims = new List<Claim>
@@ -47,7 +73,18 @@ public static class UserEndpoint
                 logger.LogInformation($"Claim Type: {claim.Type}, Claim Value: {claim.Value}");
             }
 
-            return Results.Ok();
+            // Return a token if needed
+            var token = GenerateToken(user);
+            return Results.Ok(new { token, role = user.Role.ToString() }); // Ensure role is included in the response
+        });
+
+        // Get list of users
+        group.MapGet("/", async (PetStoreDbContext db) =>
+        {
+            var users = await db.Users
+                .Select(u => new UserDTO(u.Id, u.Username, u.FullName, u.Email, u.Address, u.Role.ToString(), u.Password))
+                .ToListAsync();
+            return Results.Ok(users);
         });
 
         // Đăng xuất
@@ -57,6 +94,48 @@ public static class UserEndpoint
             return Results.Redirect("/"); // Redirect to the home page after logging out
         });
 
+        group.MapPut("/{id}", async (int id, [FromBody] UserDTO updatedUser, PetStoreDbContext db) =>
+        {
+            var user = await db.Users.FindAsync(id);
+            if (user == null)
+            {
+                return Results.NotFound();
+            }
+
+            user.Username = updatedUser.Username;
+            if (!string.IsNullOrEmpty(updatedUser.Password))
+            {
+                user.Password = HashPassword(updatedUser.Password);
+            }
+            user.FullName = updatedUser.FullName;
+            user.Email = updatedUser.Email;
+            user.Address = updatedUser.Address;
+
+            await db.SaveChangesAsync();
+            return Results.Ok(new UserDTO(user.Id, user.Username, user.FullName, user.Email, user.Address, user.Role.ToString(), user.Password));
+        });
+
         return group;
+    }
+
+    private static string HashPassword(string password)
+    {
+        using var sha256 = SHA256.Create();
+        var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+        return Convert.ToBase64String(hashedBytes);
+    }
+
+    private static string GenerateToken(PetStoreAPI.Entities.UserEntity user)
+    {
+        // Implement token generation logic here
+        // For example, using JWT
+        return "generated_token";
+    }
+
+    private static string GenerateToken()
+    {
+        // Implement token generation logic here
+        // For example, using JWT
+        return "generated_token";
     }
 }

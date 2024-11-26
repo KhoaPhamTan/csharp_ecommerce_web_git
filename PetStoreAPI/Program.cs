@@ -4,8 +4,18 @@ using PetStoreAPI.Endpoints;
 using PetStoreAPI.EndPoints;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddControllers();
+
+// Configure logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 // Configure DbContext with SQLite
 builder.Services.AddDbContext<PetStoreDbContext>(options =>
@@ -17,7 +27,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigin",
         builder =>
         {
-            builder.WithOrigins("http://localhost:5135")  // Ensure this matches the UI origin
+            builder.WithOrigins("http://localhost:5135", "http://localhost:3000")  // Ensure this matches the UI origin
                    .AllowAnyMethod()
                    .AllowAnyHeader()
                    .AllowCredentials(); // Allow sending cookies
@@ -37,9 +47,16 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;  // Use cookie only with HTTPS
     });
 
-builder.Services.AddAuthorization(); // Add authorization services
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy =>
+        policy.RequireRole("Admin"));
+});
 
 var app = builder.Build();
+
+// Ensure the app serves static files from the "wwwroot" directory
+
 
 // Run migrations automatically (if needed)
 await app.MigrateDbAsync(); // Custom method to migrate the database
@@ -51,6 +68,10 @@ app.UseCors("AllowSpecificOrigin"); // Ensure CORS is used before authentication
 app.UseAuthentication();
 app.UseAuthorization(); // Ensure authorization middleware is used
 
+// Add logging to verify endpoints are being mapped
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+logger.LogInformation("Mapping endpoints...");
+
 // Map endpoints
 app.MapStoresEndPoints();
 app.MapCartEndpoints();
@@ -58,6 +79,12 @@ app.MapRegistrationEndpoints();
 app.MapPetEndpoints();
 app.MapCategoryEndpoints(); // Ánh xạ các endpoints liên quan đến Category
 app.MapUserEndpoints(); // Ánh xạ các endpoints liên quan đến người dùng
+app.MapAdminEndpoints(); // Add this line to map admin endpoints
+
+logger.LogInformation("Endpoints mapped successfully");
+
+// Add a simple log message to verify logging is working
+logger.LogInformation("Application started successfully");
 
 // Run the application
 app.Run();

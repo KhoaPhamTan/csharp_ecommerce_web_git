@@ -1,7 +1,10 @@
 GET http://localhost:5134/petStores
 
 ###
+GET http://localhost:5134/Users
 
+
+###
 GET http://localhost:5134/Categories
 
 ###
@@ -169,4 +172,13 @@ Content-Type: application/json
      "Email": "khoapham.1234567@gmail.com", 
      "Address": "121, 3/2 Street, District 10, HCM City",
      "Role": "Customer"
+}
+
+### wrong Type
+POST  http://localhost:5134/Users/login
+Content-Type: application/json
+
+{
+    "Email": "khoapham.1234567@gmail.com",
+    "Password": "1234567890" 
 }

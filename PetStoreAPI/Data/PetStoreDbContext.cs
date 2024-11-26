@@ -49,6 +49,12 @@ namespace PetStoreAPI.Data
                 entity.Property(e => e.Role).IsRequired();
             });
 
+            // Ensure the role is correctly mapped
+            modelBuilder.Entity<UserEntity>()
+                .Property(u => u.Role)
+                .HasConversion<string>()
+                .IsRequired();
+
             // Configure CartItemEntity
             modelBuilder.Entity<CartItemEntity>(entity =>
             {

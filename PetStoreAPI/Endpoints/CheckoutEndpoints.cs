@@ -12,7 +12,7 @@ public static class CheckoutEndpoints
 {
     public static RouteGroupBuilder MapCheckoutEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/api/checkout");
+        var group = app.MapGroup("/checkout");
 
         group.MapPost("/", async ([FromBody] CheckoutRequest checkoutRequest, PetStoreDbContext dbContext, ILogger<Program> logger, HttpContext context) =>
         {
