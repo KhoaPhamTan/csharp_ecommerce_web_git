@@ -1,3 +1,6 @@
 **/obj/
 **/bin/
 **/.cache/
+**/.obj/
+**/.bin/
+PetStoreReact/node_modules/.cache/default-development/0.pack
