@@ -39,7 +39,7 @@ namespace PetStoreUI.Pages
             {
                 PetStores = petStoresQuery.Include(p => p.Category)
                     .Where(p => p.Category.Name == categoryName)
-                    .Select(p => new PetStoreDTO(p.Id, p.PetName, p.Category.Name, p.Gender, p.PetDescription, p.Price, DateOnly.FromDateTime(p.BirthDay), p.ImageUrl))
+                    .Select(p => new PetStoreDTO(p.Id, p.PetName, p.Category.Name, p.Gender, p.PetDescription, p.Price, DateOnly.FromDateTime(p.BirthDay), Url.Content("~/images/" + p.ImageUrl))) // Ensure ImageUrl is correctly set
                     .ToList();
             }
 

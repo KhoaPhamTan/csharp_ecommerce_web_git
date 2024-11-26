@@ -28,7 +28,7 @@ namespace PetStoreAPI.EndPoints
                     pet.PetDescription,
                     pet.Price,
                     DateOnly.FromDateTime(pet.BirthDay),
-                    pet.ImageUrl
+                    "/images/" + pet.ImageUrl // Ensure ImageUrl is correctly set
                 )).ToList();
 
                 return Results.Ok(petDtos);

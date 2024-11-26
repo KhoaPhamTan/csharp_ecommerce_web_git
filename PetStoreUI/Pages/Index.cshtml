@@ -28,7 +28,7 @@
                             {
                                 <td>
                                     <a href="/PetDetails/@petStores[j].Id">
-                                        <img src="@Url.Content("~/" + petStores[j].ImageUrl)" alt="Pet Image" class="pet-image"/>
+                                        <img src="@petStores[j].ImageUrl" alt="Pet Image" class="pet-image"/> <!-- Ensure ImageUrl is correctly referenced -->
                                     </a><br />
                                     <strong>Pet Name:</strong> 
                                     <a href="/PetDetails/@petStores[j].Id" class="pet-name-link">@petStores[j].PetName</a><br />

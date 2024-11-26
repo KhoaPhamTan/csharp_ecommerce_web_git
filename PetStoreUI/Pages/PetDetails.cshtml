@@ -19,7 +19,7 @@
 {
     <div class="pet-details-container">
         <div class="pet-details-card">
-            <img src="@Url.Content("~/" + Model.Pet.ImageUrl)" alt="Pet Image" class="pet-image"/>
+            <img src="@Model.Pet.ImageUrl" alt="Pet Image" class="pet-image"/> <!-- Ensure ImageUrl is correctly referenced -->
             <h3>@Model.Pet.PetName</h3>
             <div class="pet-details-info">
                 <p><strong>Gender:</strong> @Model.Pet.Gender</p>
