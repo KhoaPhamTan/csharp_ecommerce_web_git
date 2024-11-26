@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ConfirmPopup from "../components/ConfirmPopup";
+import DeletePopup from "../components/DeletePopup"; // Import the new DeletePopup component
 import EditUserPopup from "../components/EditUserPopup";
 import "../styles/ManageUsers.css"; // Import the specific CSS file for ManageUsers
 
@@ -163,7 +164,7 @@ const ManageUsers = () => {
       </table>
 
       {isPopupOpen && (
-        <ConfirmPopup
+        <DeletePopup
           message="Are you sure you want to delete this user?"
           onConfirm={handleConfirmDelete}
           onCancel={handleCancelDelete}

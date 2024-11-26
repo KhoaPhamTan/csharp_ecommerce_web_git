@@ -35,7 +35,7 @@ const EditPopup = ({ pet: initialPet, onSave, onCancel, onChange }) => {
 
   return (
     <div className="popup">
-      <div className="popup-inner">
+      <div className="popup-content">
         <h2>{pet.id ? "Edit Pet Details" : "Add Pet Details"}</h2>
         <label>
           Category:
