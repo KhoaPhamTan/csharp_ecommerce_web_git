@@ -16,3 +16,8 @@ click to add to cart =>increase nunber ở add to cart icon
 ---------------
 25/11/2024
 create react page
+------
+Future enhancement:
+- Complete Check out Process: add method to pay
+- Rating Pet
+- Admin: category page, 
