@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import DeletePopup from "../components/DeletePopup"; // Import the new DeletePopup component
 import EditPopup from "../components/EditPopup"; // Import the new EditPopup component
-import "../styles/ManagePets.css"; // Import the new CSS file
+import "../styles/ManagePets.css"; // Import the specific CSS file for ManagePets
 
 const ManagePets = () => {
   const [pets, setPets] = useState([]);
@@ -73,9 +73,60 @@ const ManagePets = () => {
     setEditPet(null);
   };
 
+  const handleSaveAdd = async () => {
+    const token = localStorage.getItem("token");
+    if (!editPet.petName) {
+      console.error("Pet name is required.");
+      return;
+    }
+    if (!editPet.gender) {
+      console.error("Gender is required.");
+      return;
+    }
+    if (!editPet.petDescription) {
+      console.error("Description is required.");
+      return;
+    }
+    if (!editPet.price || editPet.price <= 0) {
+      console.error("Price must be positive.");
+      return;
+    }
+    if (!editPet.categoryName) {
+      console.error("Category name is required.");
+      return;
+    }
+    if (!editPet.birthDay) {
+      console.error("Birth date is required.");
+      return;
+    }
+
+    const formattedPet = {
+      ...editPet,
+      birthDay: new Date(editPet.birthDay).toISOString().split('T')[0], // Format birthDay as DateOnly string
+    };
+
+    try {
+      const response = await axios.post("http://localhost:5134/petstores", formattedPet, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const newPet = response.data;
+      newPet.categoryName = editPet.categoryName; // Ensure categoryName is set correctly
+      setPets((prevPets) => [...prevPets, newPet]);
+    } catch (error) {
+      console.error("Error adding pet:", error.response ? error.response.data : error.message);
+    }
+    setIsEditPopupOpen(false);
+    setEditPet(null);
+  };
+
   const handleCancelEdit = () => {
     setIsEditPopupOpen(false);
     setEditPet(null);
+  };
+
+  const handleAddClick = () => {
+    setEditPet({}); // Initialize with an empty object for adding a new pet
+    setIsEditPopupOpen(true);
   };
 
   return (
@@ -86,7 +137,8 @@ const ManagePets = () => {
         </Link>
       </div>
       <h2>Manage Pets</h2>
-      <table>
+      <button className="add-button" onClick={handleAddClick}>Add Pet</button>
+      <table className="manage-pets-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -112,20 +164,21 @@ const ManagePets = () => {
               <td>{new Date(pet.birthDay).toLocaleDateString()}</td>
               <td>
                 <img
-                  src={pet.imageUrl ? `http://localhost:5135/${pet.imageUrl}` : "/placeholder-image.png"} // Ensure this matches the property name in your database
+                  src={pet.imageUrl ? `http://localhost:5135${pet.imageUrl}` : "/placeholder-image.png"} // Ensure this matches the property name in your database
                   alt={pet.petName}
                   onError={(e) => {
                     console.error(`Image load error for ${pet.petName}: ${pet.imageUrl}`);
-                    e.target.src = "/placeholder-image.png";
+                    e.target.src = "/placeholder-image.jpg";
                   }}
                   onLoad={() => {
                     console.log(`Image loaded for ${pet.petName}: ${pet.imageUrl}`);
                   }}
                 />
+                {console.log(`Debug: pet.imageUrl = ${pet.imageUrl}`)} {/* Debug logging */}
               </td>
               <td>
-                <button onClick={() => handleEditClick(pet)}>Edit</button>
-                <button onClick={() => handleDeleteClick(pet.id)}>Delete</button>
+                <button className="edit-button" onClick={() => handleEditClick(pet)}>Edit</button>
+                <button className="delete-button" onClick={() => handleDeleteClick(pet.id)}>Delete</button>
               </td>
             </tr>
           ))}
@@ -141,7 +194,7 @@ const ManagePets = () => {
       {isEditPopupOpen && (
         <EditPopup
           pet={editPet}
-          onSave={handleSaveEdit}
+          onSave={editPet.id ? handleSaveEdit : handleSaveAdd}
           onCancel={handleCancelEdit}
           onChange={(updatedPet) => setEditPet(updatedPet)}
         />

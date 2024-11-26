@@ -1,0 +1,95 @@
+.manage-users-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  table-layout: fixed; /* Ensure columns fill the available space */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.manage-users-table th, .manage-users-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  width: auto; /* Ensure columns fill the available space */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.manage-users-table th:nth-child(1), .manage-users-table td:nth-child(1) {
+  width: 5%; /* ID */
+}
+
+.manage-users-table th:nth-child(2), .manage-users-table td:nth-child(2) {
+  width: 20%; /* Email */
+}
+
+.manage-users-table th:nth-child(3), .manage-users-table td:nth-child(3) {
+  width: 10%; /* Username */
+}
+
+.manage-users-table th:nth-child(4), .manage-users-table td:nth-child(4) {
+  width: 15%; /* Full Name */
+}
+
+.manage-users-table th:nth-child(5), .manage-users-table td:nth-child(5) {
+  width: 33%; /* Address */
+}
+
+.manage-users-table th:nth-child(6), .manage-users-table td:nth-child(6) {
+  width: 7%; /* Role */
+}
+
+.manage-users-table th:nth-child(7), .manage-users-table td:nth-child(7) {
+  width: 10%; /* Actions */
+}
+
+.back-to-dashboard {
+  text-decoration: none;
+  color: blue;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 20px;
+  display: inline-block;
+}
+
+.back-to-dashboard:hover {
+  text-decoration: underline;
+  color: darkblue;
+}
+
+.add-button {
+  float: right;
+  margin-bottom: 20px;
+  padding: 5px 10px;
+  border: none;
+  background-color: #28a745;
+  color: white;
+  cursor: pointer;
+}
+
+.add-button:hover {
+  background-color: #218838;
+}
+
+.edit-button, .delete-button {
+  width: 100px; /* Fixed width */
+  margin-bottom: 5px;
+}
+
+.edit-button {
+  background-color: #007bff;
+  margin-right: 5px; /* Add space between buttons */
+}
+
+.edit-button:hover {
+  background-color: #0056b3;
+}
+
+.delete-button {
+  background-color: #dc3545;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}

@@ -22,7 +22,7 @@ namespace PetStoreUI.Pages.Account
         public LoginModel(PetStoreDbContext dbContext, ILogger<LoginModel> logger)
         {
             _dbContext = dbContext;
-            _logger = _logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger)); // Ensure logger is not null
             Input = new LoginInputModel { Email = string.Empty, Password = string.Empty };
             ReturnUrl = string.Empty;
         }

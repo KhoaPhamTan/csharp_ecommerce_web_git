@@ -1,11 +1,12 @@
 import { useState } from "react";
+import "../styles/EditPopup.css"; // Import the CSS for the popup
 
 const EditUserPopup = ({ user, onConfirm, onCancel }) => {
-  const [username, setUsername] = useState(user.username);
+  const [username, setUsername] = useState(user.username || "");
   const [password, setPassword] = useState("");
-  const [address, setAddress] = useState(user.address);
-  const [fullName, setFullName] = useState(user.fullName);
-  const [email, setEmail] = useState(user.email);
+  const [address, setAddress] = useState(user.address || "");
+  const [fullName, setFullName] = useState(user.fullName || "");
+  const [email, setEmail] = useState(user.email || "");
 
   const handleConfirm = () => {
     const updatedUser = { ...user, username, password, fullName, email, address };
@@ -15,7 +16,7 @@ const EditUserPopup = ({ user, onConfirm, onCancel }) => {
   return (
     <div className="popup">
       <div className="popup-content">
-        <h3>Edit User</h3>
+        <h3>{user.id ? "Edit User" : "Add User"}</h3>
         <label>
           Username:
           <input

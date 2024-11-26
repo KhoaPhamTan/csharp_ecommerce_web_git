@@ -35,7 +35,7 @@ namespace PetStoreAPI.Endpoints
                     petStore.PetDescription,
                     petStore.Price,
                     DateOnly.FromDateTime(petStore.BirthDay),
-                    petStore.ImageUrl); // Ensure ImageUrl is correctly set
+                    petStore.ImageUrl.StartsWith("/images/") ? petStore.ImageUrl : "/images/" + petStore.ImageUrl); // Ensure ImageUrl is correctly set
 
                 return Results.Ok(petStoreDetailDTO);
             });

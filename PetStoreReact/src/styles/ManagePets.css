@@ -1,81 +1,110 @@
-.back-to-dashboard {
-  margin-bottom: 20px;
-  display: inline-block;
-  text-decoration: none;
-  color: #007bff;
-}
-
-.back-to-dashboard:hover {
-  text-decoration: underline;
-}
-
-table {
+.manage-pets-table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  table-layout: fixed; /* Ensure columns fill the available space */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
-th, td {
+.manage-pets-table th, .manage-pets-table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
+  width: auto; /* Ensure columns fill the available space */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
-th {
-  background-color: #f2f2f2;
-}
-
-img {
-  width: 100px;
+.manage-pets-table img {
+  width: 200px;
   height: 150px;
   object-fit: cover;
 }
 
-button {
-  margin-right: 10px;
+.manage-pets-table th:nth-child(1), .manage-pets-table td:nth-child(1) {
+  width: 5%; /* ID */
+}
+
+.manage-pets-table th:nth-child(2), .manage-pets-table td:nth-child(2) {
+  width: 5%; /* Category */
+}
+
+.manage-pets-table th:nth-child(3), .manage-pets-table td:nth-child(3) {
+  width: 10%; /* Pet Name */
+}
+
+.manage-pets-table th:nth-child(4), .manage-pets-table td:nth-child(4) {
+  width: 5%; /* Gender */
+}
+
+.manage-pets-table th:nth-child(5), .manage-pets-table td:nth-child(5) {
+  width: auto; /* Description */
+}
+
+.manage-pets-table th:nth-child(6), .manage-pets-table td:nth-child(6) {
+  width: 8%; /* Price */
+}
+
+.manage-pets-table th:nth-child(7), .manage-pets-table td:nth-child(7) {
+  width: 8%; /* Birth Date */
+}
+
+.manage-pets-table th:nth-child(8), .manage-pets-table td:nth-child(8) {
+  width: 12%; /* Image */
+  text-align: center;
+}
+
+.manage-pets-table th:nth-child(9), .manage-pets-table td:nth-child(9) {
+  width: 10%; /* Actions */
+}
+
+.back-to-dashboard {
+  text-decoration: none;
+  color: blue;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 20px;
+  display: inline-block;
+}
+
+.back-to-dashboard:hover {
+  text-decoration: underline;
+  color: darkblue;
+}
+
+.add-button {
+  float: right;
+  margin-bottom: 20px;
   padding: 5px 10px;
   border: none;
-  background-color: #007bff;
+  background-color: #28a745;
   color: white;
   cursor: pointer;
 }
 
-button:hover {
+.add-button:hover {
+  background-color: #218838;
+}
+
+.edit-button, .delete-button {
+  width: 100px; /* Fixed width */
+  margin-bottom: 5px;
+}
+
+.edit-button {
+  background-color: #007bff;
+  margin-right: 5px; /* Add space between buttons */
+}
+
+.edit-button:hover {
   background-color: #0056b3;
 }
 
-th:nth-child(1), td:nth-child(1) {
-  width: 50px; /* ID */
+.delete-button {
+  background-color: #dc3545;
 }
 
-th:nth-child(2), td:nth-child(2) {
-  width: 100px; /* Category */
-}
-
-th:nth-child(3), td:nth-child(3) {
-  width: 150px; /* Pet Name */
-}
-
-th:nth-child(4), td:nth-child(4) {
-  width: 70px; /* Gender (width of the word 'Female') */
-}
-
-th:nth-child(5), td:nth-child(5) {
-  width: 300px; /* Description */
-}
-
-th:nth-child(6), td:nth-child(6) {
-  width: 80px; /* Price */
-}
-
-th:nth-child(7), td:nth-child(7) {
-  width: 120px; /* Birth Date */
-}
-
-th:nth-child(8), td:nth-child(8) {
-  width: 150px; /* Image */
-}
-
-th:nth-child(9), td:nth-child(9) {
-  width: 150px; /* Actions */
+.delete-button:hover {
+  background-color: #c82333;
 }

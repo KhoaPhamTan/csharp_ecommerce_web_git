@@ -41,7 +41,7 @@ namespace PetStoreUI.Pages
                     petStore.PetDescription,
                     petStore.Price,
                     DateOnly.FromDateTime(petStore.BirthDay),
-                    Url.Content("~/images/" + petStore.ImageUrl)); // Ensure ImageUrl is correctly set
+                    petStore.ImageUrl.StartsWith("/images/") ? petStore.ImageUrl : "/images/" + petStore.ImageUrl); // Ensure ImageUrl is correctly set
             }
             else
             {

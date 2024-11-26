@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ConfirmPopup from "../components/ConfirmPopup";
 import EditUserPopup from "../components/EditUserPopup";
-import "../styles.css";
+import "../styles/ManageUsers.css"; // Import the specific CSS file for ManageUsers
 
 const ManageUsers = () => {
   const [users, setUsers] = useState([]);
@@ -72,6 +72,21 @@ const ManageUsers = () => {
     setIsEditPopupOpen(false); // Close the popup after editing
   };
 
+  const handleConfirmAdd = async (newUser) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await axios.post("http://localhost:5134/users", newUser, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const addedUser = response.data;
+      addedUser.role = getRoleDisplayName(addedUser.role); // Map role to string representation
+      setUsers((prevUsers) => [...prevUsers, addedUser]);
+    } catch (error) {
+      console.error("Error adding user:", error);
+    }
+    setIsEditPopupOpen(false); // Close the popup after adding
+  };
+
   const handleCancelEdit = () => {
     setIsEditPopupOpen(false);
   };
@@ -88,6 +103,22 @@ const ManageUsers = () => {
     }
   };
 
+  const handleAddClick = () => {
+    setSelectedUser({}); // Initialize with an empty object for adding a new user
+    setIsEditPopupOpen(true);
+  };
+
+  const getRoleDisplayName = (role) => {
+    switch (role) {
+      case "0":
+        return "Customer";
+      case "1":
+        return "Admin";
+      default:
+        return role;
+    }
+  };
+
   return (
     <div>
       <div>
@@ -96,13 +127,15 @@ const ManageUsers = () => {
         </Link>
       </div>
       <h2>Manage Users</h2>
-      <button onClick={handleRefreshClick}>Refresh Users</button>
-      <table>
+      <button className="add-button" onClick={handleAddClick}>Add User</button>
+      <table className="manage-users-table">
         <thead>
           <tr>
             <th>ID</th>
             <th>Email</th>
+            <th>Username</th>
             <th>Full Name</th>
+            <th>Address</th>
             <th>Role</th>
             <th>Actions</th>
           </tr>
@@ -112,13 +145,15 @@ const ManageUsers = () => {
             <tr key={user.id}>
               <td>{user.id}</td>
               <td>{user.email}</td>
+              <td>{user.username}</td>
               <td>{user.fullName}</td>
-              <td>{user.role}</td>
+              <td>{user.address}</td>
+              <td>{getRoleDisplayName(user.role)}</td>
               <td>
                 {user.role !== "Admin" && ( // Only show the buttons if the role is not Admin
                   <>
-                    <button onClick={() => handleEditClick(user)}>Edit</button>
-                    <button onClick={() => handleDeleteClick(user.id)}>Delete</button>
+                    <button className="edit-button" onClick={() => handleEditClick(user)}>Edit</button>
+                    <button className="delete-button" onClick={() => handleDeleteClick(user.id)}>Delete</button>
                   </>
                 )}
               </td>
@@ -138,7 +173,7 @@ const ManageUsers = () => {
       {isEditPopupOpen && (
         <EditUserPopup
           user={selectedUser}
-          onConfirm={handleConfirmEdit}
+          onConfirm={selectedUser.id ? handleConfirmEdit : handleConfirmAdd}
           onCancel={handleCancelEdit}
         />
       )}

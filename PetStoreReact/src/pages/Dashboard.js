@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import "../App.css"; // Add this import
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -22,9 +23,9 @@ const Dashboard = () => {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <p>Welcome to the store!</p>
         {!isAuthenticated ? (
-          <button onClick={handleLoginClick}>Login</button>
+          <button onClick={handleLoginClick} className="button">Login</button>
         ) : (
-          <button onClick={handleLogoutClick}>Logout</button>
+          <button onClick={handleLogoutClick} className="button">Logout</button>
         )}
       </div>
       <nav>

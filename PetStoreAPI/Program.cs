@@ -75,10 +75,10 @@ logger.LogInformation("Mapping endpoints...");
 // Map endpoints
 app.MapStoresEndPoints();
 app.MapCartEndpoints();
-app.MapRegistrationEndpoints();
+app.MapRegistrationEndpoints(); // Ensure this line is present to map the registration endpoints
 app.MapPetEndpoints();
-app.MapCategoryEndpoints(); // Ánh xạ các endpoints liên quan đến Category
-app.MapUserEndpoints(); // Ánh xạ các endpoints liên quan đến người dùng
+app.MapCategoryEndpoints();
+app.MapUserEndpoints(); // Ensure this line is present to map the user endpoints
 app.MapAdminEndpoints(); // Add this line to map admin endpoints
 
 logger.LogInformation("Endpoints mapped successfully");

@@ -1,55 +1,24 @@
 h1, h2 {
   margin-left: 20px;
 }
-table-wrapper {
-  overflow-x: auto; /* Đảm bảo bảng không bị tràn khung */
+
+.table-wrapper {
+  overflow-x: auto; /* Ensure table does not overflow */
   margin: 20px 0;
 }
 
-table {
-  border: 1;
-  width:  auto;
-  align-content: left;
-  max-width: 100%; /* Đảm bảo bảng không vượt quá chiều rộng khung */
-  border-collapse: collapse; /* Xóa khoảng cách giữa các ô */
-  table-layout: auto; /* Cho phép tự động điều chỉnh độ rộng cột */
-  margin-left: 20px;
-  margin-right: 20px;
+button {
+  margin-bottom: 5px;
+  padding: 5px 10px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  width: 100%;
 }
 
-table th,
-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
-
-table th {
-  background-color: #f2f2f2;
-  font-weight: bold;
-}
-
-table td {
-  word-wrap: break-word;
-}
-
-table th:nth-child(1),
-table td:nth-child(1) {
-  width: 50px; /* Giới hạn chiều rộng cột ID */
-}
-
-table th:nth-child(3),
-table td:nth-child(3) {
-  min-width: 150px; /* Độ rộng tối thiểu cho các cột có nội dung dài */
-  max-width: 300px; /* Độ rộng tối đa */
-  overflow: hidden;
-  text-overflow: ellipsis; /* Hiển thị dấu "..." nếu nội dung quá dài */
-}
-
-table th:last-child,
-table td:last-child {
-  text-align: center; /* Căn giữa các nút hành động */
-  width: 150px; /* Cố định kích thước cho cột hành động */
+button:hover {
+  background-color: #0056b3;
 }
 
 .back-to-dashboard {
@@ -66,3 +35,7 @@ table td:last-child {
 .back-to-dashboard:hover {
   color: darkblue;
 }
+
+
+
+

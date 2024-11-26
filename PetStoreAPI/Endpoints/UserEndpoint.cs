@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;
+using PetStoreAPI.Entities; // Add this line to include the namespace for UserEntity
 
 namespace PetStoreAPI.Endpoints;
 
@@ -15,7 +16,7 @@ public static class UserEndpoint
 {
     public static RouteGroupBuilder MapUserEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/Users");
+        var group = app.MapGroup("/users");
 
         // Đăng nhập
         group.MapPost("/login", async ([FromBody] LoginDTO loginDTO, PetStoreDbContext db, HttpContext httpContext, ILogger<Program> logger) =>
@@ -94,6 +95,7 @@ public static class UserEndpoint
             return Results.Redirect("/"); // Redirect to the home page after logging out
         });
 
+        // Update user
         group.MapPut("/{id}", async (int id, [FromBody] UserDTO updatedUser, PetStoreDbContext db) =>
         {
             var user = await db.Users.FindAsync(id);
@@ -115,6 +117,33 @@ public static class UserEndpoint
             return Results.Ok(new UserDTO(user.Id, user.Username, user.FullName, user.Email, user.Address, user.Role.ToString(), user.Password));
         });
 
+        // Add new user
+        group.MapPost("/", async ([FromBody] UserRegistrationDTO userDto, PetStoreDbContext db, ILogger<Program> logger) =>
+        {
+            logger.LogInformation("Received add user request for user: {Username}", userDto.Username);
+
+            if (db.Users == null || await db.Users.AnyAsync(u => u.Username == userDto.Username))
+            {
+                logger.LogWarning("Username already exists: {Username}", userDto.Username);
+                return Results.BadRequest("Username already exists.");
+            }
+
+            var user = new UserEntity
+            {
+                Username = userDto.Username,
+                Password = HashPassword(userDto.Password),
+                FullName = userDto.FullName,
+                Email = userDto.Email,
+                Address = userDto.Address,
+                Role = UserRole.Customer // Default role
+            };
+
+            db.Users.Add(user);
+            await db.SaveChangesAsync();
+            logger.LogInformation("User added successfully: {Username}", userDto.Username);
+            return Results.Created($"/users/{user.Id}", user);
+        });
+
         return group;
     }
 
@@ -126,13 +155,6 @@ public static class UserEndpoint
     }
 
     private static string GenerateToken(PetStoreAPI.Entities.UserEntity user)
-    {
-        // Implement token generation logic here
-        // For example, using JWT
-        return "generated_token";
-    }
-
-    private static string GenerateToken()
     {
         // Implement token generation logic here
         // For example, using JWT
